@@ -11,7 +11,7 @@
  * @return void
  *
  */
-void utilities_serialDump(unsigned char* array, unsigned int length)
+void utilities_serialDump(unsigned char array[], unsigned int length)
 {
   for (unsigned int i = 0; i < length; i++)
   {

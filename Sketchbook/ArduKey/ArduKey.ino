@@ -1,8 +1,6 @@
 #include <ArduKey.h>
 #include <AES.h>
 
-#define ARDUKEY_VERSION "1.0.0"
-
 // Used AES mode
 #define AES_CIPHER_BITS 128
 
@@ -11,42 +9,6 @@
 
 // We only work with one block
 #define AES_CBC_BLOCKCOUNT 1
-
-/*
- * The 16 bytes key (for one block).
- */
-unsigned char key[] = 
-{
-  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
-
-/*
- * The 16 bytes input text (one block).
- */
-unsigned char plain[] =
-{
-  0xAA, 0x44, 0x81, 0xec, 0x3c, 0xc6, 0x27, 0xba, 0xcd, 0x5d, 0xc3, 0xfb, 0x08, 0xf2, 0x73, 0xe6,
-};
-
-/*
- * The 16 bytes initialation vector (one block).
- */
-unsigned char my_iv[] =
-{
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
-
-// 1 block output
-unsigned char cipher[N_BLOCK];
-unsigned char new_plain[N_BLOCK];
-unsigned char temp_iv[N_BLOCK];
-
-
-unsigned int counter = eeprom_readCounter();
-// unsigned int counter = 0x0000;
-
-
-
 
 
 AES aes;
@@ -59,13 +21,14 @@ AES aes;
  */
 void setup()
 {
+  // Initialising ArduKey debugging
   Serial.begin(57600);
 
-  Serial.print("Initialising ArduKey ");
-  Serial.println(ARDUKEY_VERSION);
+  // Reads the AES key from EEPROM
+  unsigned char* aeskey = eeprom_getAESKey();
 
-  // Sets specifications
-  if ( aes.set_key(key, AES_CIPHER_BITS) != 0 )
+  // Sets AES library preferences
+  if ( aes.set_key(aeskey, AES_CIPHER_BITS) != 0 )
   {
     Serial.print("Error: AES configuration could not be set!");
   }
@@ -79,8 +42,48 @@ void setup()
  */
 void loop() 
 {
-  Serial.print("Counter: ");
+  // Reads the current ArduKey counter value from EEPROM
+  unsigned int counter = eeprom_getCounter();
+
+  Serial.print("Current counter value: ");
   Serial.println(counter++);
+
+
+
+  /*
+  unsigned char newAESKey[] = 
+  {
+    0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  };
+  eeprom_setAESKey(newAESKey);
+  */
+
+  unsigned char* aeskey = eeprom_getAESKey();
+  utilities_serialDump(aeskey, EEPROM_AESKEY_LEN);
+
+
+
+
+  /*
+   * The 16 bytes input text (one block).
+   */
+  unsigned char plain[] =
+  {
+    0xAA, 0x44, 0x81, 0xec, 0x3c, 0xc6, 0x27, 0xba, 0xcd, 0x5d, 0xc3, 0xfb, 0x08, 0xf2, 0x73, 0xe6,
+  };
+
+  /*
+   * The 16 bytes initialation vector (one block).
+   */
+  unsigned char my_iv[] =
+  {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  };
+
+  // 1 block output
+  unsigned char cipher[N_BLOCK];
+  unsigned char new_plain[N_BLOCK];
+  unsigned char temp_iv[N_BLOCK];
 
   // Dumps plain text
   utilities_serialDump(plain, AES_BLOCKSIZE);

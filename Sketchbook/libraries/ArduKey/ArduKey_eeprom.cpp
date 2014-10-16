@@ -18,30 +18,25 @@ bool ArduKeyEEPROM::isAddressOkay(int address)
  * Reads a given count of bytes from EEPROM.
  * 
  * @param startAddress The address we start reading from.
+ * @param buffer The array of bytes we write to.
  * @param length The count of bytes we read.
- * @return array<unsigned char>
+ * @return bool
  *
  */
-unsigned char* ArduKeyEEPROM::getBytes(int startAddress, int length)
+bool ArduKeyEEPROM::getBytes(int startAddress, unsigned char buffer[], int length)
 {
-  /*
   if ( !ArduKeyEEPROM::isAddressOkay(startAddress) || !ArduKeyEEPROM::isAddressOkay(startAddress + length) )
   {
-    return ;
+    return false;
   }
-  */
-
-  // WARNING: Without the "static" the ADDRESS from variable would be passed outside instead the data!
-  static unsigned char* returnValue;
 
   for (int i = 0; i < length; i++)
   {
-    // The address passed to eeprom_write_byte() is a normal integer like "123"
-    // and has to be casted to "real address type" (represented via byte pointer).
-    returnValue[i] = eeprom_read_byte((unsigned char *) (startAddress + i));
+    // The address passed to eeprom_x_byte() is a normal integer and has to be casted to "real address type" (represented via byte pointer).
+    buffer[i] = eeprom_read_byte((unsigned char *) (startAddress + i));
   }
 
-  return returnValue;
+  return true;
 }
 
 /*
@@ -50,93 +45,65 @@ unsigned char* ArduKeyEEPROM::getBytes(int startAddress, int length)
  * @param startAddress The address we start writing to.
  * @param values The array of bytes we write.
  * @param length The length of the array.
- * @return void
+ * @return bool
  *
  */
-void ArduKeyEEPROM::setBytes(int startAddress, unsigned char* values, int length)
+bool ArduKeyEEPROM::setBytes(int startAddress, unsigned char values[], int length)
 {
   if ( !ArduKeyEEPROM::isAddressOkay(startAddress) || !ArduKeyEEPROM::isAddressOkay(startAddress + length) )
   {
-    return ;
+    return false;
   }
 
   for (int i = 0; i < length; i++)
   {
-    // The address passed to eeprom_write_byte() is a normal integer like "123"
-    // and has to be casted to "real address type" (represented via byte pointer).
+    // The address passed to eeprom_x_byte() is a normal integer and has to be casted to "real address type" (represented via byte pointer).
     eeprom_write_byte((unsigned char *) (startAddress + i), values[i]);
   }
+
+  return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
  * Reads the current AES key from EEPROM.
  * 
- * @return array<unsigned char>
+ * @param buffer The array of bytes we write to.
+ * @return bool
  *
  */
-unsigned char* ArduKeyEEPROM::getAESKey()
+bool ArduKeyEEPROM::getAESKey(unsigned char buffer[])
 {
-
-  unsigned char* readed = ArduKeyEEPROM::getBytes(EEPROM_AESKEY_POS, EEPROM_AESKEY_LEN);
-
-
-	return readed;
+  return ArduKeyEEPROM::getBytes(EEPROM_AESKEY_POS, buffer, EEPROM_AESKEY_LEN);
 }
 
 /*
  * Writes a new AES key to EEPROM.
  * 
- * @param aesKey The new AES key.
- * @return void
+ * @param values The array of bytes we write.
+ * @return bool
  *
  */
-void ArduKeyEEPROM::setAESKey(unsigned char* aesKey)
+bool ArduKeyEEPROM::setAESKey(unsigned char values[])
 {
-	ArduKeyEEPROM::setBytes(EEPROM_AESKEY_POS, aesKey, EEPROM_AESKEY_LEN);
+  return ArduKeyEEPROM::setBytes(EEPROM_AESKEY_POS, values, EEPROM_AESKEY_LEN);
 }
 
 
 
 
 
-
-
-
-
-
-
-
-
 /*
- * Gets the current counter value from EEPRO.
+ * Gets the current counter value from EEPROM.
  * 
  * @return unsigned int
  *
  */
 unsigned int ArduKeyEEPROM::getCounter()
 {
-  unsigned char* readed = ArduKeyEEPROM::getBytes(EEPROM_COUNTER_POS, EEPROM_COUNTER_LEN);
-  return (unsigned int) readed[0];
+  unsigned char buffer[2];
+  ArduKeyEEPROM::getBytes(EEPROM_COUNTER_POS, buffer, EEPROM_COUNTER_LEN);
+
+  return (unsigned int) buffer[0];
 }
 
 /*

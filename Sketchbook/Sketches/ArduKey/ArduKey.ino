@@ -333,20 +333,12 @@ void setup()
   // Initialising ArduKey debugging
   Serial.begin(57600);
 
-  /*
-  unsigned char newAESKey[] = 
-  {
-    0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06,
-  };
-
-  ArduKeyEEPROM::setAESKey(newAESKey);
-  */
-
   // Reads the current AES key from EEPROM
-  unsigned char* aeskey = ArduKeyEEPROM::getAESKey();
+  unsigned char buffer[16];
+  ArduKeyEEPROM::getAESKey(buffer);
 
   // Sets AES library preferences
-  if ( aes.set_key(aeskey, AES_CIPHER_BITS) != 0 )
+  if ( aes.set_key(buffer, AES_CIPHER_BITS) != 0 )
   {
     Serial.print("Error: AES configuration could not be set!");
   }
@@ -363,8 +355,6 @@ void loop()
   Serial.println("Dumping eeprom contents...");
   eeprom_serial_dump_table();
 
-
-
   Serial.print("Current counter value: ");
 
   // Reads the current ArduKey counter value from EEPROM
@@ -374,8 +364,31 @@ void loop()
 
 
 
-  unsigned char* aeskey = ArduKeyEEPROM::getAESKey();
-  utilities_serialDump(aeskey, EEPROM_AESKEY_LEN);
+  //unsigned char* buffer = NULL; // WARUM geht das nicht?
+  unsigned char buffer[16];
+
+
+  ArduKeyEEPROM::getAESKey(buffer);
+
+  // Hier ok:
+  Serial.println(buffer[0], HEX);
+  Serial.println(buffer[1], HEX);
+  Serial.println(buffer[2], HEX);
+  Serial.println(buffer[3], HEX);
+
+  // Hier nicht:
+  for (int i = 0; i < 16; i++)
+  {
+    Serial.print("0x");
+    Serial.print(buffer[i], HEX);
+    Serial.print(" ");
+  }
+  Serial.println();
+
+
+  ArduKeyUtilities::serialDump(buffer, 16);
+
+
 
 
 
@@ -402,7 +415,7 @@ void loop()
   unsigned char temp_iv[N_BLOCK];
 
   // Dumps plain text
-  utilities_serialDump(plain, AES_BLOCKSIZE);
+  ArduKeyUtilities::serialDump(plain, AES_BLOCKSIZE);
 
   // Copies original IV to temp iv
   memcpy(temp_iv, my_iv, 16);
@@ -412,7 +425,7 @@ void loop()
   {
     Serial.println("Error: AES encryption process failed!");
   }
-  utilities_serialDump(cipher, AES_BLOCKSIZE);
+  ArduKeyUtilities::serialDump(cipher, AES_BLOCKSIZE);
 
   // Copies original IV to temp iv
   memcpy(temp_iv, my_iv, 16);
@@ -422,10 +435,10 @@ void loop()
   {
     Serial.println("Error: AES decryption process failed!");
   }
-  utilities_serialDump(new_plain, AES_BLOCKSIZE);
+  ArduKeyUtilities::serialDump(new_plain, AES_BLOCKSIZE);
 
 
   Serial.println();
   Serial.println();
-  delay(5000);
+  delay(4000);
 }

@@ -1,6 +1,6 @@
 #include "ArduKey_utilities.h"
 
-// Note: For "Serial" and constants (other types should not be used):
+// Note: For Serial library and constants:
 #include <Arduino.h>
 
 /*
@@ -11,9 +11,9 @@
  * @return void
  *
  */
-void utilities_serialDump(unsigned char array[], unsigned int length)
+void ArduKeyUtilities::serialDump(unsigned char array[], int length)
 {
-  for (unsigned int i = 0; i < length; i++)
+  for (int i = 0; i < length; i++)
   {
     Serial.print("0x");
     Serial.print(array[i], HEX);

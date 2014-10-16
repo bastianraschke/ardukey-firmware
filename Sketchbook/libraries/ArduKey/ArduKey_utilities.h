@@ -1,7 +1,12 @@
 #ifndef __ARDUKEY_UTILITIES_H__
 #define __ARDUKEY_UTILITIES_H__
 
-extern void utilities_serialDump(unsigned char array[], unsigned int length);
+
+class ArduKeyUtilities
+{
+  public:
+    static void	serialDump(unsigned char array[], int length);
+};
 
 
 #endif

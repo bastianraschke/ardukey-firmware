@@ -3,7 +3,7 @@
 
 
 
-
+// TODO
 #define EEPROM_MIN_ADDRESS	0
 #define EEPROM_MAX_ADDRESS	511
 
@@ -24,14 +24,18 @@
 class ArduKeyEEPROM
 {
   public:
-    static unsigned char*	getBytes(int startAddress, int length);
-    static void				setBytes(int startAddress, unsigned char* values, int length);
+    static bool		getBytes(int startAddress, unsigned char buffer[], int length);
+    static bool		setBytes(int startAddress, unsigned char values[], int length);
 
-    static unsigned char*	getAESKey();
-    static void				setAESKey(unsigned char* aesKey);
+    static bool		getAESKey(unsigned char buffer[]);
+    static bool		setAESKey(unsigned char values[]);
+
+
+
+
 
     static unsigned int		getCounter();
-    static void				setCounter(unsigned int);
+    static void		setCounter(unsigned int);
 
   private:
     static bool isAddressOkay(int address);

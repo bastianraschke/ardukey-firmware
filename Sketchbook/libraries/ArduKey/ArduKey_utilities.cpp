@@ -1,23 +1,23 @@
 #include "ArduKey_utilities.h"
-
-// Note: For Serial library and constants:
 #include <Arduino.h>
 
 /*
- * Dumps an given byte array via Serial output.
+ * Dumps an given array of data via Serial output.
  * 
- * @args array: The array to dump.
- * @args length: The length of the array.
+ * @args values: The array to dump.
+ * @args length: The length of the data.
  * @return void
  *
  */
-void ArduKeyUtilities::serialDump(unsigned char array[], int length)
+void ArduKeyUtilities::serialDump(unsigned char values[], int length)
 {
+	char buffer[16];
+
   for (int i = 0; i < length; i++)
   {
-    Serial.print("0x");
-    Serial.print(array[i], HEX);
-    Serial.print(" ");
+    sprintf(buffer, "0x%02X ", values[i]);
+    Serial.print(buffer);
+
   }
   Serial.println();
 }

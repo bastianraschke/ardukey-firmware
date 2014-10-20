@@ -1,0 +1,13 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "Sketchbook/libraries/ArduKey"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "Sketchbook/libraries/AES"
+		}
+	]
+}

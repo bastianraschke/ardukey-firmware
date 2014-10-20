@@ -15,6 +15,16 @@ void setup()
   // Initialising ArduKey debugging
   Serial.begin(57600);
 
+  // Wait for serial port to connect (needed for Leonardo only)
+  /*
+  while (!Serial)
+  {
+    ; 
+  }
+  */
+
+  Serial.print("hallo");
+
   // Initialized buffer array
   unsigned char buffer[16] = {0};
 

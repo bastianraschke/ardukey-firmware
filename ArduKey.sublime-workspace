@@ -23,7 +23,7 @@
 			"file": "Sketchbook/Sketches/ArduKey/ArduKey.ino",
 			"settings":
 			{
-				"buffer_size": 2210,
+				"buffer_size": 2344,
 				"line_ending": "Unix"
 			}
 		},
@@ -86,6 +86,7 @@
 	],
 	"file_history":
 	[
+		"/home/bastian/Desktop/libraries/SD/File.cpp",
 		"/home/bastian/Desktop/ArduKey/Sketchbook/libraries/ArduKey/ArduKey_utilities.cpp"
 	],
 	"find":
@@ -162,15 +163,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2210,
+						"buffer_size": 2344,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								205,
-								205
+								262,
+								262
 							]
 						],
 						"settings":
@@ -180,7 +181,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 45.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

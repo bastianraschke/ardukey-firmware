@@ -15,7 +15,7 @@
  * @return void
  *
  */
-void ArduKeyEEPROM::dumpTable()
+void ArduKeyEEPROM::dumpEEPROM()
 {
   // The byte counter in a row
   int x = 0;

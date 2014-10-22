@@ -1,0 +1,138 @@
+Felder kopieren:
+
+for (byte i = 0 ; i < 16; i++)
+{
+  temp_iv[i] = my_iv[i];
+}
+
+oder:
+
+memcpy(temp_iv, my_iv, 16);
+
+----
+
+Typ				Speicherplatz 	Wertebereich (dezimal)
+
+char			1 Byte 			-128 bis +127 bzw. 0 bis 255
+signed char		1 Byte 			-128 bis +127
+unsigned char	1 Byte 			0 bis 255
+short			2 Byte 			-32768 bis +32767
+unsigned short 	2 Byte 			0 bis 65535
+int 			4 Byte			-2147483648 bis +2147483647
+unsigned int 	4 Byte 			0 bis 4294967295
+long 			4 Byte 			-2147483648 bis +2147483647
+unsigned long 	4 Byte 			0 bis 4294967295
+
+----
+
+#include <inttypes.h>
+
+uint8_t 	= unsigned char
+uint16_t 	= unsigned int
+uint32_t	= unsigned long int
+uint64_t	= unsigned long long
+
+---
+
+Achtung: Referenzen als Rückgabetyp
+
+Referenzen haben als Rückgabewert die gleichen Vorteile wie bei der Wertübergabe. Allerdings sind sie in diesem Zusammenhang wesentlich gefährlicher. Es kann schnell passieren, dass Sie versehentlich eine Referenz auf eine lokale Variable zurückgeben. Diese Variable ist außerhalb der Funktion allerdings nicht mehr gültig, daher ist das Resultat, wenn Sie außerhalb der Funktion darauf zugreifen, undefiniert. Aus diesem Grund sollten Sie Referenzen als Rückgabewert nur verwenden wenn Sie wirklich wissen, was Sie tun.
+
+// Achtung: Ohne static würde die Adresse nach außen gegeben werden: GEFÄHRLICH!
+static int returnValue[8];
+
+// Achtung: Ohne static würde die Adresse nach außen gegeben werden: GEFÄHRLICH!
+static unsigned char* returnValue;
+
+---
+
+Jeder dieser Prototypen ist gleichwertig:
+
+void funktion(int *parameter);
+void funktion(int parameter[]);
+void funktion(int parameter[5]); // Größenordnung werden ignoriert
+void funktion(int parameter[76]); // Größenordnung werden ignoriert
+
+Achtung: Die Größenordnung wird nur bei ÜBERGEBENDEN Arrays ignoriert! Beim Arrayerstellen muss eine Größenordnung festgelegt werden.
+
+---
+
+Unterschied zwischen Arraydefinition und Pointerdefinition:
+Zwar kann man mit einem Pointer auch auf ein Array zugreifen,
+aber nur bei der Arraydefinition wird auch der Speicherplatz für die Array-Elemente reserviert!
+
+Die Arraydefinition ist also mehr als eine Pointerdefinition:
+Durch die Arraydefinition wird der Speicherbereich für die Arrayelemente belegt und die Adresskonstante wird bereitgestellt. 
+
+---
+
+int k[6];         // k ist ein Array von sechs Elementen des Typs int
+int *l[6];        // l ist ein Array von sechs Elementen des Typs Zeiger auf int
+int (*m)[6];      // m ist ein Zeiger auf ein Array von sechs Elementen des Typs int
+
+---
+
+Ein Pointertyp, dem man jede beliebige Adresse zuweisen kann, ist der Pointer auf void: 
+void *pvoid;
+
+
+---
+
+Uninitialisierte Zeiger
+
+Falls eine Zeigervariable dereferenziert wird, die nicht auf einen gültigen Speicherbereich des entsprechenden Typs zeigt, kann es ebenfalls zu unerwartetem Verhalten kommen. So kann eine Situation auftreten, wenn eine Variable vor ihrer Benutzung nicht auf einen gültigen Wert initialisiert wurde oder wenn sie noch auf eine Speicheradresse verweist, die nicht mehr gültig ist (wilder Zeiger). Zeigt der Zeiger nicht auf eine gültige Speicheradresse, kann es wie beim Nullzeiger zu einer Schutzverletzung kommen.
+
+---
+
+int *pWert;
+int Wert;
+pWert = Wert;     // dem Zeiger kann kein int zugewiesen werden
+Wert  = pWert;    // umgekehrt natürlich auch nicht
+
+Zeigervariablen erlauben als Wert nur Adressen auf Variablen. Daher kann einer Zeigervariable wie in diesem Beispiel kein Integer-Wert zugewiesen werden.
+
+---
+
+Konstante zeiger:
+
+Das Schlüsselwort const kann auf zweierlei Arten in Verbindung mit Zeigern genutzt werden:
+
+- Um den Wert, auf den der Zeiger zeigt, konstant zu machen,
+- Um den Zeiger selbst konstant zu machen.
+
+
+int               Wert1;           // eine int-Variable
+int               Wert2;           // noch eine int-Variable
+int const *       p1Wert = &Wert1; // Zeiger auf konstanten int
+int * const       p2Wert = &Wert1; // konstanter Zeiger auf int
+int const * const p3Wert = &Wert1; // konstanter Zeiger auf konstanten int
+
+p1Wert  = &Wert2; // geht
+*p1Wert = Wert2;  // geht nicht, int konstant
+
+p2Wert  = &Wert2; // geht nicht, Zeiger konstant
+*p2Wert = Wert2;  // geht
+
+p3Wert  = &Wert2; // geht nicht, Zeiger konstant
+*p3Wert = Wert2;  // geht nicht, int konstant
+
+Wie Sie sich sicher noch erinnern, gehört const immer zu dem was links von ihm steht. Es sei denn links steht nichts mehr, dann gehört es zu dem was rechts davon steht.
+
+---
+
+Ihre Deklaration sollte also wie folgt aussehen:
+int* myPointer = NULL;
+
+---
+
+lieber:
+
+var + 1 statt var++ verwenden wenn nicht unbedingt benötigt
+
+---
+
+sizeof(array) probleme:
+https://en.wikibooks.org/wiki/C_Programming/Pointers_and_arrays#sizeof
+
+Note that the sizeof operator only works on things defined earlier in the same function. The compiler replaces it with some fixed constant number.
+The information about the length of array is not actually stored anywhere in memory (unless we keep track of it separately).

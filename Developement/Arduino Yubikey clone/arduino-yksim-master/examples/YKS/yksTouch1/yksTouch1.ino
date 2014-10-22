@@ -180,8 +180,8 @@ void YubikeyInit() {
   uint16_t counter;
   uint8_t *ptr;
 
-  char public_id[32+1];
-  char private_id[12+1];
+  char public_id[32+1]; // 32 zeichen + \0
+  char private_id[12+1]; // 12 zeichen + \0
 
   uint32_t time = 0x010203;
 

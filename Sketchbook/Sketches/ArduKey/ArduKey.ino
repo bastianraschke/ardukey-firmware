@@ -3,7 +3,6 @@
 
 AES aes;
 
-
 /*
  * The setup method.
  * 
@@ -31,27 +30,6 @@ void setup()
 
 
 
-void convertIntToEqlString(unsigned char dst[], const unsigned char src[], int srcSize)
-{
-  // The transforming table
-  const char trans[16] = { 'c', 'b', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'n', 'r', 't', 'u', 'v' };
-
-  // Source field counter
-  int a = 0;
-
-  // Destination field counter
-  int b = 0;
-
-  for (int i = 0; i < srcSize; i++)
-  {
-    const unsigned char currentSrcByte = src[a++];
-
-    dst[b++] = trans[ (currentSrcByte & 0xf0) >> 4 ];
-    dst[b++] = trans[ (currentSrcByte & 0x0f) >> 0 ];
-  }
-
-  dst[b] = '\0';
-}
 
 
 
@@ -59,7 +37,7 @@ void convertIntToEqlString(unsigned char dst[], const unsigned char src[], int s
 bool generateOneTimePad(/*unsigned char publicId[6], unsigned char secretId[6], unsigned char resultBuffer[16]*/)
 {
   unsigned int counter = ArduKeyEEPROM::getCounter();
-  unsigned int timestamp = 7;
+  unsigned int timestamp = 65518; // = 0xFFEE
 
   unsigned char otpBody[ARDUKEY_BLOCKSIZE] = 
   {
@@ -67,12 +45,12 @@ bool generateOneTimePad(/*unsigned char publicId[6], unsigned char secretId[6], 
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 
     // The counter
-    (counter >> 8) & 0xFF,
-    (counter >> 0) & 0xFF,
+    (counter >> 8) & 0xFF, // left byte
+    (counter >> 0) & 0xFF, // right byte
 
     // Timestamp
-    (timestamp >> 8) & 0xFF,
-    (timestamp >> 0) & 0xFF,
+    (timestamp >> 8) & 0xFF, // left byte
+    (timestamp >> 0) & 0xFF, // right byte
 
     // Random entropy
     'a', 'b', 'c', 'd',
@@ -85,13 +63,16 @@ bool generateOneTimePad(/*unsigned char publicId[6], unsigned char secretId[6], 
   // DEBUG
   ArduKeyUtilities::serialDump(otpBody, ARDUKEY_BLOCKSIZE);
 
+
+
   // General operation buffer
   unsigned char buffer[ARDUKEY_BLOCKSIZE] = {0};
 
   // Encrypts the plain OTP body
   if ( aes.encrypt(otpBody, buffer) != 0 )
   {
-    Serial.println("Error: AES encryption process failed!");
+    // AES encryption process failed
+    return false;
   }
 
   // DEBUG
@@ -100,22 +81,14 @@ bool generateOneTimePad(/*unsigned char publicId[6], unsigned char secretId[6], 
 
 
 
+  // Length = 32 chars + '\0' byte
+  char resultBuffer[32 + 1] = "";
 
-  unsigned char resultBuffer[32 + 1] = "";
-
-  convertIntToEqlString(resultBuffer, buffer, ARDUKEY_BLOCKSIZE);
-  
-  /*
-  for (int i = 0; i < sizeof(resultBuffer); i++)
-  {
-    Serial.print(resultBuffer[i]);
-  }
-  */
-
+  ArduKeyUtilities::convertToHex((char *) buffer, resultBuffer, ARDUKEY_BLOCKSIZE);
   Serial.println(resultBuffer);
 
-  // Increments counter
-  // ArduKeyEEPROM::setCounter(counter + 1); // Note: counter++ does not work
+
+
 
   return true;
 }
@@ -130,6 +103,9 @@ bool generateOneTimePad(/*unsigned char publicId[6], unsigned char secretId[6], 
 void loop() 
 {
   generateOneTimePad();
+
+  // Increments counter
+  // ArduKeyEEPROM::setCounter(counter + 1); // Note: counter++ does not work
 
   Serial.println();
   Serial.println();

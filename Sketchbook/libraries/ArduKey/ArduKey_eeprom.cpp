@@ -1,6 +1,7 @@
+#include "ArduKey.h"
 #include "ArduKey_eeprom.h"
+#include <Arduino.h>
 #include <avr/eeprom.h>
-#include "Arduino.h"
 
 /*
  * Class based on EpromUtils:
@@ -48,7 +49,6 @@ void ArduKeyEEPROM::dumpEEPROM()
       Serial.print(buffer);
     }
   }
-
 }
 
 /*
@@ -153,8 +153,8 @@ bool ArduKeyEEPROM::setAESKey(unsigned char values[])
  */
 unsigned int ArduKeyEEPROM::getCounter()
 {
-  unsigned int value; // 16 Bits
-  unsigned char* ptr = (unsigned char*) &value; // 8 Bits
+  unsigned int value; // 2 Bytes
+  unsigned char* ptr = (unsigned char*) &value; // 1 Byte
 
   ArduKeyEEPROM::getBytes(EEPROM_COUNTER_POS, ptr, EEPROM_COUNTER_LEN);
   return value;
@@ -169,8 +169,8 @@ unsigned int ArduKeyEEPROM::getCounter()
  */
 void ArduKeyEEPROM::setCounter(unsigned int value)
 {
-  // value = 16 Bits
-  // ptr = 8 Bits
+  // value // 2 Bytes
+  // ptr // 1 Byte
   unsigned char* ptr = (unsigned char*) &value;
 
   ArduKeyEEPROM::setBytes(EEPROM_COUNTER_POS, ptr, EEPROM_COUNTER_LEN);

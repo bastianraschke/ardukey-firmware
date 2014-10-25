@@ -1,35 +1,48 @@
 #ifndef __ARDUKEY_H__
 #define __ARDUKEY_H__
 
-// Include ArduKey library files
-#include "ArduKey_eeprom.h"
-#include "ArduKey_utilities.h"
-
-
 
 #define ARDUKEY_BLOCKSIZE 16
 
+#define ARDUKEY_PUBLICID_SIZE 16
+#define ARDUKEY_SECRETID_SIZE 6
 
-// AES library configuration
-//
+// Length = 44 chars + '\0' byte
+#define ARDUKEY_OTP_SIZE ((ARDUKEY_PUBLICID_SIZE + ARDUKEY_BLOCKSIZE) * 2 + 1)
+
 
 // Used AES mode
 #define AES_CIPHER_BITS 128
 
-// The size of a block
-#define AES_BLOCKSIZE N_BLOCK
-
-// We only work with one block
-#define AES_CBC_BLOCKCOUNT 1
+#define AES_BLOCKSIZE 16
+#define AES_KEYSIZE 16
 
 
-/*
-# define YUBIKEY_BLOCK_SIZE 16
-# define YUBIKEY_KEY_SIZE 16
-# define YUBIKEY_UID_SIZE 6
-# define YUBIKEY_OTP_SIZE (2 * YUBIKEY_BLOCK_SIZE +1)
-*/
-//#define ARDUKEY_UID
+typedef struct
+{
+    // The secret identity of the ArduKey
+    unsigned char secretId[ARDUKEY_SECRETID_SIZE];
 
+    // The current counter value
+    unsigned int counter;
+
+    // The current session counter value
+    unsigned int session;
+
+    // The nonvolatile timestamp
+    unsigned int timestamp;
+
+    // Pseudo-random entropy
+    unsigned int random;
+
+    // The CRC16 checksum of all data
+    unsigned int crc;
+}
+ardukey_token_t;
+
+
+// Includes all ArduKey library files
+#include "ArduKey_eeprom.h"
+#include "ArduKey_utilities.h"
 
 #endif

@@ -84,8 +84,7 @@ extern void yubikey_generate (yubikey_token_t token,
 
 # define yubikey_counter(ctr) ((ctr) & 0x7FFF)
 # define yubikey_capslock(ctr) ((ctr) & 0x8000)
-# define yubikey_crc_ok_p(tok) \
-  (yubikey_crc16 ((tok), YUBIKEY_BLOCK_SIZE) == YUBIKEY_CRC_OK_RESIDUE)
+# define yubikey_crc_ok_p(tok) (yubikey_crc16 ((tok), YUBIKEY_BLOCK_SIZE) == YUBIKEY_CRC_OK_RESIDUE)
 
 /*
  * Low-level functions; ModHex.

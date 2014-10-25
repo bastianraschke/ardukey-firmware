@@ -1,6 +1,7 @@
 #ifndef __ARDUKEY_EEPROM_H__
 #define __ARDUKEY_EEPROM_H__
 
+
 // Limit for Arduino EEPROM (may be different on the Arduino models).
 #define EEPROM_MIN_ADDRESS  0
 #define EEPROM_MAX_ADDRESS  512 - 1
@@ -27,11 +28,17 @@ class ArduKeyEEPROM
     static bool  getBytes(int startAddress, unsigned char* ptr, int length);
     static bool  setBytes(int startAddress, unsigned char* ptr, int length);
 
-    static bool  getAESKey(unsigned char buffer[]);
-    static bool  setAESKey(unsigned char values[]);
+    static bool  getAESKey(unsigned char buffer[AES_KEYSIZE]);
+    static bool  setAESKey(unsigned char values[AES_KEYSIZE]);
 
     static unsigned int  getCounter();
     static void          setCounter(unsigned int);
+
+    static bool  getPublicId(unsigned char buffer[ARDUKEY_PUBLICID_SIZE]);
+    static bool  setPublicId(unsigned char values[ARDUKEY_PUBLICID_SIZE]);
+
+    static bool  getSecretId(unsigned char buffer[ARDUKEY_SECRETID_SIZE]);
+    static bool  setSecretId(unsigned char values[ARDUKEY_SECRETID_SIZE]);
 
   private:
     static bool  isAddressOkay(int address);

@@ -30,6 +30,7 @@ void ArduKeyUtilities::serialDump(char values[], int length)
 
 /*
  * Converts a given array to an array that will contain the two hexadezimal representation chars per char.
+ * (thanks to #3 on https://stackoverflow.com/questions/10723403/char-array-to-hex-string-c)
  *
  * // Example:
  * char src[2] = { 0xAA, 0xBB };

@@ -23,7 +23,7 @@
 			"file": "Sketchbook/Sketches/ArduKey/ArduKey.ino",
 			"settings":
 			{
-				"buffer_size": 1984,
+				"buffer_size": 2109,
 				"line_ending": "Unix"
 			}
 		},
@@ -31,7 +31,7 @@
 			"file": "/home/bastian/Projekte/Computer und Technik/Arduino/ArduKey/Developement/Arduino Yubikey clone/arduino-yksim-master/examples/YKS/yksTouch1/yksTouch1.ino",
 			"settings":
 			{
-				"buffer_size": 4807,
+				"buffer_size": 4845,
 				"line_ending": "Unix"
 			}
 		}
@@ -212,21 +212,21 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1984,
+						"buffer_size": 2109,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								808,
-								808
+								0,
+								0
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Arduino-like IDE/Arduino.tmLanguage",
-							"tab_size": 2,
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
@@ -242,7 +242,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4807,
+						"buffer_size": 4845,
 						"regions":
 						{
 						},

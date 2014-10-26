@@ -11,6 +11,19 @@ memcpy(temp_iv, my_iv, 16);
 
 ----
 
+https://stackoverflow.com/questions/75191/what-is-an-unsigned-char
+
+If you are using character types for text, use the unqualified char:
+it is the type of character literals like 'a' or '0'.
+
+It also works out as a number value, but it is unspecified whether that value is treated as signed or unsigned. Beware character comparisons through inequalities - although if you limit yourself to ASCII (0-127) you're just about safe.
+
+If you are using character types as numbers, use:
+- signed char, which gives you at least the -127 to 127 range. (-128 to 127 is common)
+- unsigned char, which gives you at least the 0 to 255 range.
+
+---
+
 Typ				Speicherplatz 	Wertebereich (dezimal)
 
 char			1 Byte 			-128 bis +127 bzw. 0 bis 255
@@ -31,6 +44,14 @@ uint8_t 	= unsigned char
 uint16_t 	= unsigned int
 uint32_t	= unsigned long int
 uint64_t	= unsigned long long
+
+---  
+
+The difference is in the location where the preprocessor searches for the included file.
+
+For #include "filename" the preprocessor searches in the same directory as the file containing the directive. This method is normally used to include programmer-defined header files.
+
+For #include <filename> the preprocessor searches in an implementation dependent manner, normally in directories pre-designated by the compiler. This method is normally used to include standard library header files.
 
 ---
 
@@ -75,12 +96,14 @@ int (*m)[6];      // m ist ein Zeiger auf ein Array von sechs Elementen des Typs
 Ein Pointertyp, dem man jede beliebige Adresse zuweisen kann, ist der Pointer auf void: 
 void *pvoid;
 
-
 ---
 
 Uninitialisierte Zeiger
 
 Falls eine Zeigervariable dereferenziert wird, die nicht auf einen gültigen Speicherbereich des entsprechenden Typs zeigt, kann es ebenfalls zu unerwartetem Verhalten kommen. So kann eine Situation auftreten, wenn eine Variable vor ihrer Benutzung nicht auf einen gültigen Wert initialisiert wurde oder wenn sie noch auf eine Speicheradresse verweist, die nicht mehr gültig ist (wilder Zeiger). Zeigt der Zeiger nicht auf eine gültige Speicheradresse, kann es wie beim Nullzeiger zu einer Schutzverletzung kommen.
+
+Ihre Deklaration sollte also wie folgt aussehen:
+int* myPointer = NULL;
 
 ---
 
@@ -117,11 +140,6 @@ p3Wert  = &Wert2; // geht nicht, Zeiger konstant
 *p3Wert = Wert2;  // geht nicht, int konstant
 
 Wie Sie sich sicher noch erinnern, gehört const immer zu dem was links von ihm steht. Es sei denn links steht nichts mehr, dann gehört es zu dem was rechts davon steht.
-
----
-
-Ihre Deklaration sollte also wie folgt aussehen:
-int* myPointer = NULL;
 
 ---
 

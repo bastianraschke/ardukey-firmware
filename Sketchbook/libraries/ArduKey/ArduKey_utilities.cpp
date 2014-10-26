@@ -23,34 +23,40 @@ void ArduKeyUtilities::serialDump(unsigned char values[], int length)
   Serial.println();
 }
 
-void ArduKeyUtilities::serialDump(char values[], int length)
+/*
+ * Calculates the CRC16 checksum of given data.
+ * 
+ * @args values: The array to calculate checksum of.
+ * @args length: The length of processed data.
+ * @return unsigned int
+ *
+ */
+unsigned int ArduKeyUtilities::CRC16(unsigned char values[], int length)
 {
-  ArduKeyUtilities::serialDump((unsigned char*) values, length);
+    unsigned int foo = 0xffff;
+
+    // TODO
+    return foo;
 }
 
 /*
  * Converts a given array to an array that will contain the two hexadezimal representation chars per char.
  * (thanks to #3 on https://stackoverflow.com/questions/10723403/char-array-to-hex-string-c)
  *
- * // Example:
- * char src[2] = { 0xAA, 0xBB };
- *
- * // will converted to:
- * char dst[5] = { 'a', 'a', 'b', 'b', '\0' };
- *
- * // respectively:
- * char dst[5] = "aabb";
+ * Important:
+ * The destination array must be sized N*2 + 1 in comparison to source array (N).
  * 
- * @args dst: The array to convert (const = read only).
- * @args src: The result array.
+ * @args dst: The source array we read from.
+ * @args src: The result array we write to.
  * @args srcSize: The length of src.
  * @return void
  *
  */
-void ArduKeyUtilities::convertToHex(const char src[], char dst[], int srcSize)
+void ArduKeyUtilities::convertToHex(char src[], char dst[], int srcSize)
 {
   // The transforming table
-  const char trans[16] = { 'c', 'b', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'n', 'r', 't', 'u', 'v' };
+  // TODO
+  const char table[16] = { 'c', 'b', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'n', 'r', 't', 'u', 'v' };
 
   // Source field counter
   int a = 0;
@@ -62,9 +68,9 @@ void ArduKeyUtilities::convertToHex(const char src[], char dst[], int srcSize)
   {
     char currentSrcByte = src[a++];
 
-    // Important: Never change the brackets
-    dst[b++] = trans[ (currentSrcByte & 0xf0) >> 4 ];
-    dst[b++] = trans[ (currentSrcByte & 0x0f) >> 0 ];
+    // Important: Do not change the brackets
+    dst[b++] = table[ (currentSrcByte & 0xf0) >> 4 ];
+    dst[b++] = table[ (currentSrcByte & 0x0f) >> 0 ];
   }
 
   dst[b] = '\0';

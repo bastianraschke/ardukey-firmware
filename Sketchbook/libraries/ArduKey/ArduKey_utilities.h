@@ -5,10 +5,11 @@
 class ArduKeyUtilities
 {
   public:
-    static void serialDump(unsigned char array[], int length);
-    static void serialDump(char array[], int length);
+    static void serialDump(unsigned char values[], int length);
 
-    static void convertToHex(const char src[], char dst[], int srcSize);
+    static unsigned int CRC16(unsigned char values[], int length);
+    static void convertToHex(char src[], char dst[], int srcSize);
+
 };
 
 

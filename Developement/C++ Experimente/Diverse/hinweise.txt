@@ -36,6 +36,9 @@ unsigned int 	4 Byte 			0 bis 4294967295
 long 			4 Byte 			-2147483648 bis +2147483647
 unsigned long 	4 Byte 			0 bis 4294967295
 
+Serial.println(sizeof(uint8_t)); // 1
+Serial.println(sizeof(uint16_t)); // 2
+
 ----
 
 #include <inttypes.h>

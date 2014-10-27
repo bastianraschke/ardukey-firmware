@@ -5,6 +5,12 @@
 #include <inttypes.h>
 
 
+// ArduKey debugging
+//
+
+#define ARDUKEY_DEBUG 1
+
+
 // ArduKey general definitions.
 //
 
@@ -45,7 +51,7 @@ typedef struct
 
     // The nonvolatile timestamp
     // 2 Bytes
-    uint16_t timestamp;
+    uint16_t timestamp; // TODO: more than 65535?
 
     // Pseudo-random entropy
     // 2 Bytes

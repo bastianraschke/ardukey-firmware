@@ -75,14 +75,14 @@ void initializeArduKey()
     // Gets current counter value
     token.counter = ArduKeyEEPROM::getCounter();
 
-    // Initialize session counter
+    // Initializes session counter
     token.session = 0x0000;
 
-    // Initialize timestamp
-    token.timestamp = 0x0000;
+    // Initializes timestamp
+    token.timestamp = 0xDDEE;
 
-    // Initialize pseudo random number generator
-    // TODO
+    // Initializes pseudo random number generator
+    randomSeed(analogRead(0));
 
     // Increments counter
     ArduKeyEEPROM::setCounter(token.counter + 1);
@@ -99,18 +99,19 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 {
     // Sets current timestamp
     // TODO
-    token.timestamp = 0xFFEE;
+    token.timestamp = 0xDDEE;
 
-    // Sets some random entropy
-    // TODO
-    token.random = 0xAABB;
+    // Sets some random entropy (range 0..66535)
+    token.random = random (65536);
 
     // Calculates CRC16 checksum of raw token
     // (only the first 14 Bytes cause we do not want to include the checksum itself)
     token.crc = ArduKeyUtilities::CRC16((uint8_t*) &token, ARDUKEY_BLOCKSIZE - 2);
 
-    // DEBUG: Print raw token
-    ArduKeyUtilities::serialDump((uint8_t*) &token, sizeof(token));
+    #ifdef ARDUKEY_DEBUG
+        // Prints raw token
+        ArduKeyUtilities::serialDump((uint8_t*) &token, sizeof(token));
+    #endif
 
     // The buffer for encrypted raw token
     uint8_t cipher[AES_BLOCKSIZE] = {0};
@@ -124,8 +125,10 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     // Copy encrypted raw token to OTP struct
     memcpy(otp.encryptedRawToken, cipher, sizeof(cipher));
 
-    // DEBUG: Print OTP struct
-    ArduKeyUtilities::serialDump((uint8_t*) &otp, sizeof(otp));
+    #ifdef ARDUKEY_DEBUG
+        // DEBUG: Print OTP struct
+        ArduKeyUtilities::serialDump((uint8_t*) &otp, sizeof(otp));
+    #endif
 
     // Converts full OTP (public id + encrypted raw token)
     ArduKeyUtilities::convertToHex((char *) &otp, result, ARDUKEY_PUBLICID_SIZE + ARDUKEY_BLOCKSIZE);
@@ -144,9 +147,6 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
  */
 void loop() 
 {
-    // Serial.println("DUMP:");
-    // ArduKeyEEPROM::dumpEEPROM();
-
     char otp[ARDUKEY_OTP_SIZE] = "";
 
     // Generate one OTP per 4 seconds

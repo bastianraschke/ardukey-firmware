@@ -1,3 +1,33 @@
+/*
+ * ArduKey - A OTP token device based on Arduino.
+ *
+ * Written by Bastian Raschke <bastian.raschke@posteo.de>
+ * Copyright (C) 2014 Bastian Raschke
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1) Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2) Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+ * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
 #include <ArduKey.h>
 #include <AES.h>
 
@@ -26,18 +56,19 @@ void setup()
  */
 void initializeArduKey()
 {
+    uint8_t aesKey[AES_KEYSIZE] = {0};
+    uint8_t publicId[ARDUKEY_PUBLICID_SIZE] = {0};
+    uint8_t secretId[ARDUKEY_SECRETID_SIZE] = {0};
+
     // Reads the AES key from EEPROM and sets AES library preferences
-    unsigned char aesKey[AES_KEYSIZE] = {0};
     ArduKeyEEPROM::getAESKey(aesKey);
     aes.set_key(aesKey, AES_CIPHER_BITS);
 
     // Reads the public id from EEPROM and sets to OTP struct
-    unsigned char publicId[ARDUKEY_PUBLICID_SIZE] = {0};
     ArduKeyEEPROM::getPublicId(publicId);
     memcpy(otp.publicId, publicId, sizeof(publicId));
 
     // Reads the secret id from EEPROM and sets to token struct
-    unsigned char secretId[ARDUKEY_SECRETID_SIZE] = {0};
     ArduKeyEEPROM::getSecretId(secretId);
     memcpy(token.secretId, secretId, sizeof(secretId));
 
@@ -45,7 +76,7 @@ void initializeArduKey()
     token.counter = ArduKeyEEPROM::getCounter();
 
     // Initialize session counter
-    token.session = 0;
+    token.session = 0x0000;
 
     // Initialize timestamp
     token.timestamp = 0x0000;
@@ -54,7 +85,7 @@ void initializeArduKey()
     // TODO
 
     // Increments counter
-    // ArduKeyEEPROM::setCounter(token.counter + 1);
+    ArduKeyEEPROM::setCounter(token.counter + 1);
 }
 
 /*
@@ -76,16 +107,16 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 
     // Calculates CRC16 checksum of raw token
     // (only the first 14 Bytes cause we do not want to include the checksum itself)
-    token.crc = ArduKeyUtilities::CRC16((unsigned char*) &token, ARDUKEY_BLOCKSIZE - 2);
+    token.crc = ArduKeyUtilities::CRC16((uint8_t*) &token, ARDUKEY_BLOCKSIZE - 2);
 
     // DEBUG: Print raw token
-    ArduKeyUtilities::serialDump((unsigned char*) &token, sizeof(token));
+    ArduKeyUtilities::serialDump((uint8_t*) &token, sizeof(token));
 
     // The buffer for encrypted raw token
-    unsigned char cipher[AES_BLOCKSIZE] = {0};
+    uint8_t cipher[AES_BLOCKSIZE] = {0};
 
     // Encrypts the raw token
-    if ( aes.encrypt((unsigned char*) &token, cipher) != 0 )
+    if ( aes.encrypt((uint8_t*) &token, cipher) != 0 )
     {
         return false;
     }
@@ -94,10 +125,9 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     memcpy(otp.encryptedRawToken, cipher, sizeof(cipher));
 
     // DEBUG: Print OTP struct
-    ArduKeyUtilities::serialDump((unsigned char*) &otp, sizeof(otp));
+    ArduKeyUtilities::serialDump((uint8_t*) &otp, sizeof(otp));
 
-    // Converts full OTP (public id + encrypted raw token) to modhex
-    // TODO
+    // Converts full OTP (public id + encrypted raw token)
     ArduKeyUtilities::convertToHex((char *) &otp, result, ARDUKEY_PUBLICID_SIZE + ARDUKEY_BLOCKSIZE);
 
     // Increments session counter

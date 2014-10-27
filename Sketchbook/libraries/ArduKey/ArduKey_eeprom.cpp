@@ -1,54 +1,51 @@
 #include "ArduKey.h"
 #include "ArduKey_eeprom.h"
-#include <Arduino.h> // for sprintf, Serial
-#include <avr/eeprom.h>
 
-/*
- * Class based on EpromUtils:
- * http://playground.arduino.cc/Code/EepromUtil
- *
- */
+// For sprintf, Serial:
+#include <Arduino.h>
+#include <avr/eeprom.h>
 
 
 /*
  * Dumps the complete EEPROM as hex output via Serial.
+ * Thanks to http://playground.arduino.cc/Code/EepromUtil
  * 
  * @return void
  *
  */
 void ArduKeyEEPROM::dumpEEPROM()
 {
-  // The byte counter in a row
-  int x = 0;
+    // The byte counter in a row
+    int x = 0;
 
-  unsigned char currentByte;
-  char buffer[16];
+    uint8_t currentByte;
+    char buffer[16];
 
-  for (int n = EEPROM_MIN_ADDRESS; n <= EEPROM_MAX_ADDRESS; n++)
-  {
-    // Prints the address if it is the first byte in a row
-    if (x == 0)
+    for (int n = EEPROM_MIN_ADDRESS; n <= EEPROM_MAX_ADDRESS; n++)
     {
-      sprintf(buffer, "%03X: ", n);
-      Serial.print(buffer);
-    }
+        // Prints the address if it is the first byte in a row
+        if (x == 0)
+        {
+            sprintf(buffer, "%03X: ", n);
+            Serial.print(buffer);
+        }
 
-    // Reads one byte and write to buffer
-    currentByte = eeprom_read_byte((unsigned char *) n);
-    sprintf(buffer, "%02X ", currentByte);
+        // Reads one byte and write to buffer
+        currentByte = eeprom_read_byte((uint8_t *) n);
+        sprintf(buffer, "%02X ", currentByte);
 
-    x++;
+        x++;
 
-    if (x == 16)
-    {
-      x = 0;
-      Serial.println(buffer);
+        if (x == 16)
+        {
+            x = 0;
+            Serial.println(buffer);
+        }
+        else
+        {
+            Serial.print(buffer);
+        }
     }
-    else
-    {
-      Serial.print(buffer);
-    }
-  }
 }
 
 /*
@@ -60,14 +57,14 @@ void ArduKeyEEPROM::dumpEEPROM()
  */
 bool ArduKeyEEPROM::isAddressOkay(int address)
 {
-  return (address >= EEPROM_MIN_ADDRESS && address <= EEPROM_MAX_ADDRESS);
+    return (address >= EEPROM_MIN_ADDRESS && address <= EEPROM_MAX_ADDRESS);
 }
 
 /*
  * Reads a given count of bytes from EEPROM.
  *
- * Note: We use the passed pointer style (and not a unsigned char buffer[]) to provide 2 methods:
- * 1) Write to a passed unsigned char buffer[]
+ * Note: We use the passed pointer style (and not a uint8_t buffer[]) to provide 2 methods:
+ * 1) Write to a passed uint8_t buffer[]
  * 2) Write to a unsigned int variable which consists of more than one byte.
  * 
  * @param address The address we start reading from.
@@ -76,28 +73,28 @@ bool ArduKeyEEPROM::isAddressOkay(int address)
  * @return bool
  *
  */
-bool ArduKeyEEPROM::getBytes(int address, unsigned char* ptr, int length)
+bool ArduKeyEEPROM::getBytes(int address, uint8_t* ptr, int length)
 {
-  if ( !ArduKeyEEPROM::isAddressOkay(address) || !ArduKeyEEPROM::isAddressOkay(address + length) )
-  {
-    return false;
-  }
+    if ( !ArduKeyEEPROM::isAddressOkay(address) || !ArduKeyEEPROM::isAddressOkay(address + length) )
+    {
+        return false;
+    }
 
-  for (int i = 0; i < length; i++)
-  {
-    // The address passed to eeprom_x_byte() is a normal integer
-    // and has to be casted to "real address type" (represented via byte pointer).
-    *ptr++ = eeprom_read_byte((unsigned char *) (address + i));
-  }
+    for (int i = 0; i < length; i++)
+    {
+        // The address passed to eeprom_x_byte() is a normal integer
+        // and has to be casted to "real address type" (represented via byte pointer).
+        *ptr++ = eeprom_read_byte((uint8_t *) (address + i));
+    }
 
-  return true;
+    return true;
 }
 
 /*
  * Writes the given array to position (starting at given address) to EEPROM.
  * 
- * Note: We use the passed pointer style (and not a unsigned char buffer[]) to provide 2 methods:
- * 1) Read from a passed unsigned char buffer[]
+ * Note: We use the passed pointer style (and not a uint8_t buffer[]) to provide 2 methods:
+ * 1) Read from a passed uint8_t buffer[]
  * 2) Read from a unsigned int variable which consists of more than one byte.
  *
  * @param address The address we start writing to.
@@ -106,21 +103,26 @@ bool ArduKeyEEPROM::getBytes(int address, unsigned char* ptr, int length)
  * @return bool
  *
  */
-bool ArduKeyEEPROM::setBytes(int address, unsigned char* ptr, int length)
+bool ArduKeyEEPROM::setBytes(int address, uint8_t* ptr, int length)
 {
-  if ( !ArduKeyEEPROM::isAddressOkay(address) || !ArduKeyEEPROM::isAddressOkay(address + length) )
-  {
-    return false;
-  }
+    if ( !ArduKeyEEPROM::isAddressOkay(address) || !ArduKeyEEPROM::isAddressOkay(address + length) )
+    {
+        return false;
+    }
 
-  for (int i = 0; i < length; i++)
-  {
-    // The address passed to eeprom_x_byte() is a normal integer
-    // and has to be casted to "real address type" (represented via byte pointer).
-    eeprom_write_byte((unsigned char *) (address + i), *ptr++);
-  }
+    if ( ptr == NULL )
+    {
+        return false;
+    }
 
-  return true;
+    for (int i = 0; i < length; i++)
+    {
+        // The address passed to eeprom_x_byte() is a normal integer
+        // and has to be casted to "real address type" (represented via byte pointer).
+        eeprom_write_byte((uint8_t *) (address + i), *ptr++);
+    }
+
+    return true;
 }
 
 /*
@@ -130,9 +132,9 @@ bool ArduKeyEEPROM::setBytes(int address, unsigned char* ptr, int length)
  * @return bool
  *
  */
-bool ArduKeyEEPROM::getAESKey(unsigned char buffer[AES_KEYSIZE])
+bool ArduKeyEEPROM::getAESKey(uint8_t buffer[AES_KEYSIZE])
 {
-  return ArduKeyEEPROM::getBytes(EEPROM_AESKEY_POS, buffer, EEPROM_AESKEY_LEN);
+    return ArduKeyEEPROM::getBytes(EEPROM_AESKEY_POS, buffer, EEPROM_AESKEY_LEN);
 }
 
 /*
@@ -142,9 +144,9 @@ bool ArduKeyEEPROM::getAESKey(unsigned char buffer[AES_KEYSIZE])
  * @return bool
  *
  */
-bool ArduKeyEEPROM::setAESKey(unsigned char values[AES_KEYSIZE])
+bool ArduKeyEEPROM::setAESKey(uint8_t values[AES_KEYSIZE])
 {
-  return ArduKeyEEPROM::setBytes(EEPROM_AESKEY_POS, values, EEPROM_AESKEY_LEN);
+    return ArduKeyEEPROM::setBytes(EEPROM_AESKEY_POS, values, EEPROM_AESKEY_LEN);
 }
 
 /*
@@ -154,9 +156,9 @@ bool ArduKeyEEPROM::setAESKey(unsigned char values[AES_KEYSIZE])
  * @return bool
  *
  */
-bool ArduKeyEEPROM::getPublicId(unsigned char buffer[ARDUKEY_PUBLICID_SIZE])
+bool ArduKeyEEPROM::getPublicId(uint8_t buffer[ARDUKEY_PUBLICID_SIZE])
 {
-  return ArduKeyEEPROM::getBytes(EEPROM_PUBLICID_POS, buffer, EEPROM_PUBLICID_LEN);
+    return ArduKeyEEPROM::getBytes(EEPROM_PUBLICID_POS, buffer, EEPROM_PUBLICID_LEN);
 }
 
 /*
@@ -166,9 +168,9 @@ bool ArduKeyEEPROM::getPublicId(unsigned char buffer[ARDUKEY_PUBLICID_SIZE])
  * @return bool
  *
  */
-bool ArduKeyEEPROM::setPublicId(unsigned char values[ARDUKEY_PUBLICID_SIZE])
+bool ArduKeyEEPROM::setPublicId(uint8_t values[ARDUKEY_PUBLICID_SIZE])
 {
-  return ArduKeyEEPROM::setBytes(EEPROM_PUBLICID_POS, values, EEPROM_PUBLICID_LEN);
+    return ArduKeyEEPROM::setBytes(EEPROM_PUBLICID_POS, values, EEPROM_PUBLICID_LEN);
 }
 
 /*
@@ -178,9 +180,9 @@ bool ArduKeyEEPROM::setPublicId(unsigned char values[ARDUKEY_PUBLICID_SIZE])
  * @return bool
  *
  */
-bool ArduKeyEEPROM::getSecretId(unsigned char buffer[ARDUKEY_SECRETID_SIZE])
+bool ArduKeyEEPROM::getSecretId(uint8_t buffer[ARDUKEY_SECRETID_SIZE])
 {
-  return ArduKeyEEPROM::getBytes(EEPROM_SECRETID_POS, buffer, EEPROM_SECRETID_LEN);
+    return ArduKeyEEPROM::getBytes(EEPROM_SECRETID_POS, buffer, EEPROM_SECRETID_LEN);
 }
 
 /*
@@ -190,24 +192,24 @@ bool ArduKeyEEPROM::getSecretId(unsigned char buffer[ARDUKEY_SECRETID_SIZE])
  * @return bool
  *
  */
-bool ArduKeyEEPROM::setSecretId(unsigned char values[ARDUKEY_SECRETID_SIZE])
+bool ArduKeyEEPROM::setSecretId(uint8_t values[ARDUKEY_SECRETID_SIZE])
 {
-  return ArduKeyEEPROM::setBytes(EEPROM_SECRETID_POS, values, EEPROM_SECRETID_LEN);
+    return ArduKeyEEPROM::setBytes(EEPROM_SECRETID_POS, values, EEPROM_SECRETID_LEN);
 }
 
 /*
  * Gets the current counter value from EEPROM.
  * 
- * @return unsigned int
+ * @return uint16_t
  *
  */
-unsigned int ArduKeyEEPROM::getCounter()
+uint16_t ArduKeyEEPROM::getCounter()
 {
-  unsigned int value; // 2 Bytes
-  unsigned char* ptr = (unsigned char*) &value; // 1 Byte
+    uint16_t value; // 2 Bytes
+    uint8_t* ptr = (uint8_t*) &value; // 1 Byte
 
-  ArduKeyEEPROM::getBytes(EEPROM_COUNTER_POS, ptr, EEPROM_COUNTER_LEN);
-  return value;
+    ArduKeyEEPROM::getBytes(EEPROM_COUNTER_POS, ptr, EEPROM_COUNTER_LEN);
+    return value;
 }
 
 /*
@@ -217,10 +219,10 @@ unsigned int ArduKeyEEPROM::getCounter()
  * @return void
  *
  */
-void ArduKeyEEPROM::setCounter(unsigned int value)
+void ArduKeyEEPROM::setCounter(uint16_t value)
 {
-  // unsigned int value // 2 Bytes
-  unsigned char* ptr = (unsigned char*) &value; // 1 Byte
+    // uint16_t value // 2 Bytes
+    uint8_t* ptr = (uint8_t*) &value; // 1 Byte
 
-  ArduKeyEEPROM::setBytes(EEPROM_COUNTER_POS, ptr, EEPROM_COUNTER_LEN);
+    ArduKeyEEPROM::setBytes(EEPROM_COUNTER_POS, ptr, EEPROM_COUNTER_LEN);
 }

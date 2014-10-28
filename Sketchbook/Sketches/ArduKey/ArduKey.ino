@@ -45,6 +45,14 @@ ardukey_otp_t otp;
 void setup()
 {
     Serial.begin(57600);
+
+    #ifdef ARDUKEY_DEBUG
+        // Only needed for Arduino Leonardo and Micro:
+        // Do nothing until the Serial is not open
+        while (!Serial);
+    #endif
+
+    Serial.println("Initialize ArduKey...");
     initializeArduKey();
 }
 

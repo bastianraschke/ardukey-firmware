@@ -26,8 +26,9 @@ void ArduKeyUtilities::serialDump(const uint8_t values[], const int length)
 }
 
 /*
- * Calculates the CRC16 (CRC-CCITT Kermit) checksum of given data.
- * (thanks to "Antonio Pires" on https://stackoverflow.com/questions/10564491/function-to-calculate-a-crc16-checksum)
+ * Calculates the CRC16 (CRC-CCITT 0xFFFF) checksum of given data.
+ * (thanks to "Antonio Pires" on https://stackoverflow.com/questions/10564491/function-to-calculate-a-crc16-checksum
+ * and http://www.ccsinfo.com/forum/viewtopic.php?t=24977)
  * 
  * @args values: The array to calculate checksum of.
  * @args length: The length of processed data.

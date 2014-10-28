@@ -4,7 +4,7 @@
 
 // Limit for Arduino EEPROM (may be different on the Arduino models).
 #define EEPROM_MIN_ADDRESS 0
-#define EEPROM_MAX_ADDRESS 512 - 1
+#define EEPROM_MAX_ADDRESS 1024 - 1
 
 
 #define EEPROM_AESKEY_POS 0

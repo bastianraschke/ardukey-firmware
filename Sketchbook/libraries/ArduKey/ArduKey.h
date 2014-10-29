@@ -1,3 +1,33 @@
+/*
+ * ArduKey - A slim OTP token device based on Arduino.
+ *
+ * Written by Bastian Raschke <bastian.raschke@posteo.de>
+ * Copyright (C) 2014 Bastian Raschke
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1) Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2) Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+ * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
 #ifndef __ARDUKEY_H__
 #define __ARDUKEY_H__
 
@@ -8,11 +38,13 @@
 // ArduKey debugging
 //
 
-#define ARDUKEY_DEBUG 1
+// #define ARDUKEY_DEBUG 1
 
 
-// ArduKey general definitions.
+// ArduKey general definitions
 //
+
+#define ARDUKEY_PIN_BUTTON 2
 
 #define ARDUKEY_BLOCKSIZE 16
 
@@ -23,7 +55,15 @@
 #define ARDUKEY_OTP_SIZE ((ARDUKEY_PUBLICID_SIZE + ARDUKEY_BLOCKSIZE) * 2 + 1)
 
 
-// AES library definitions.
+// TimerOne library definitions
+//
+
+// Update interval of timestamp in µs
+// 8Hz in this case (1000000 / 8)
+#define TIMERONE_TIMESTAMPUPDATE 125000
+
+
+// AES library definitions
 //
 
 #define AES_CIPHER_BITS 128
@@ -31,7 +71,7 @@
 #define AES_KEYSIZE 16
 
 
-// ArduKey type definitions.
+// ArduKey special type definitions
 //
 
 // The raw token structure
@@ -46,12 +86,16 @@ typedef struct
     uint16_t counter;
 
     // The current session counter value
-    // 2 Bytes
-    uint16_t session;
+    // 1 Byte
+    uint8_t session;
 
-    // The nonvolatile timestamp
+    // The nonvolatile timestamp (high part)
     // 2 Bytes
-    uint16_t timestamp; // TODO: more than 65535?
+    uint16_t timestamp_h;
+
+    // The nonvolatile timestamp (low part)
+    // 1 Byte
+    uint8_t timestamp_l;
 
     // Pseudo-random entropy
     // 2 Bytes

@@ -1,7 +1,37 @@
+/*
+ * ArduKey - A slim OTP token device based on Arduino.
+ *
+ * Written by Bastian Raschke <bastian.raschke@posteo.de>
+ * Copyright (C) 2014 Bastian Raschke
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1) Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2) Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+ * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
 #include "ArduKey.h"
 #include "ArduKey_eeprom.h"
 
-// For sprintf, Serial:
+// For sprintf(), Serial:
 #include <Arduino.h>
 #include <avr/eeprom.h>
 
@@ -103,14 +133,14 @@ bool ArduKeyEEPROM::getBytes(int address, uint8_t* ptr, int length)
  * @return bool
  *
  */
-bool ArduKeyEEPROM::setBytes(int address, uint8_t* ptr, int length)
+bool ArduKeyEEPROM::setBytes(int address, const uint8_t* ptr, int length)
 {
     if ( !ArduKeyEEPROM::isAddressOkay(address) || !ArduKeyEEPROM::isAddressOkay(address + length) )
     {
         return false;
     }
 
-    if ( ptr == NULL )
+    if ( !ptr )
     {
         return false;
     }
@@ -118,7 +148,7 @@ bool ArduKeyEEPROM::setBytes(int address, uint8_t* ptr, int length)
     for (int i = 0; i < length; i++)
     {
         // The address passed to eeprom_x_byte() is a normal integer
-        // and has to be casted to "real address type" (represented via byte pointer).
+        // and has to be casted to "address type".
         eeprom_write_byte((uint8_t *) (address + i), *ptr++);
     }
 
@@ -128,7 +158,7 @@ bool ArduKeyEEPROM::setBytes(int address, uint8_t* ptr, int length)
 /*
  * Reads the AES key from EEPROM.
  * 
- * @param buffer The array of bytes we write to.
+ * @param buffer The buffer array we write to.
  * @return bool
  *
  */
@@ -140,7 +170,7 @@ bool ArduKeyEEPROM::getAESKey(uint8_t buffer[AES_KEYSIZE])
 /*
  * Writes a new AES key to EEPROM.
  * 
- * @param values The array of bytes we write.
+ * @param values The array of bytes we write to EEPROM.
  * @return bool
  *
  */
@@ -152,7 +182,7 @@ bool ArduKeyEEPROM::setAESKey(uint8_t values[AES_KEYSIZE])
 /*
  * Reads the public id from EEPROM.
  * 
- * @param buffer The array of bytes we write to.
+ * @param buffer The buffer array we write to.
  * @return bool
  *
  */
@@ -164,7 +194,7 @@ bool ArduKeyEEPROM::getPublicId(uint8_t buffer[ARDUKEY_PUBLICID_SIZE])
 /*
  * Writes a new public id to EEPROM.
  * 
- * @param values The array of bytes we write.
+ * @param values The array of bytes we write to EEPROM.
  * @return bool
  *
  */
@@ -176,7 +206,7 @@ bool ArduKeyEEPROM::setPublicId(uint8_t values[ARDUKEY_PUBLICID_SIZE])
 /*
  * Reads the secret id from EEPROM.
  * 
- * @param buffer The array of bytes we write to.
+ * @param buffer The buffer array we write to.
  * @return bool
  *
  */
@@ -188,7 +218,7 @@ bool ArduKeyEEPROM::getSecretId(uint8_t buffer[ARDUKEY_SECRETID_SIZE])
 /*
  * Writes a new secret id to EEPROM.
  * 
- * @param values The array of bytes we write.
+ * @param values The array of bytes we write to EEPROM.
  * @return bool
  *
  */

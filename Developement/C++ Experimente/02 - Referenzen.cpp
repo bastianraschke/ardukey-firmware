@@ -3,13 +3,20 @@ using namespace std;
 
 
 /*
- * Durch übergebenes Argument als REFERENZ kann Inhalt verändert werden!
- * Call-By-Reference
+ * Durch übergebenes Argument OHNE Referenz (call-by-value) kann Inhalt NICHT verändert werden!
  *
  */
-void test_modifyReferencePassedVariable(int &i)
+void test_callByValue(int i)
 {
-  cout << "test_modifyReferencedVariable(&i): Inhalt via: i = " << i << endl;
+  i++;
+}
+
+/*
+ * Durch übergebenes Argument als REFERENZ (call-by-reference) kann Inhalt verändert werden!
+ *
+ */
+void test_callByReference(int &i)
+{
   i++;
 }
 
@@ -21,10 +28,14 @@ int main(int argc, char** argv)
 {
   int i = 123;
 
-  // Übergebe Integer als Referenz
   cout << "Inhalt via: i = " << i << endl;    // 123
-  test_modifyReferencePassedVariable(i);
+
+  test_callByValue(i);
+  cout << "Inhalt via: i = " << i << endl;    // 123
+
+  test_callByReference(i);
   cout << "Inhalt via: i = " << i << endl;    // 124
+
   cout << endl;
 
   return 0;

@@ -122,10 +122,18 @@ Zeigervariablen erlauben als Wert nur Adressen auf Variablen. Daher kann einer Z
 Konstante zeiger:
 
 Das Schlüsselwort const kann auf zweierlei Arten in Verbindung mit Zeigern genutzt werden:
+- Um den Wert, auf den der Zeiger zeigt, konstant zu machen
+- Um den Zeiger selbst konstant zu machen
 
-- Um den Wert, auf den der Zeiger zeigt, konstant zu machen,
-- Um den Zeiger selbst konstant zu machen.
+int  x;  // Variables Integer
+int* x:  // Variabler Zeiger auf variables Integer
+int* const x;  // Konstanter Zeiger auf variables Integer
 
+const int  x; // Konstantes Integer
+const int* x; // Variabler Zeiger auf konstantes Integer
+const int* const x; // Konstanter Zeiger auf konstantes Integer
+
+---
 
 int               Wert1;           // eine int-Variable
 int               Wert2;           // noch eine int-Variable
@@ -147,7 +155,6 @@ Wie Sie sich sicher noch erinnern, gehört const immer zu dem was links von ihm 
 ---
 
 lieber:
-
 var + 1 statt var++ verwenden wenn nicht unbedingt benötigt
 
 ---

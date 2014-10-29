@@ -19,7 +19,6 @@ int main(int argc, char** argv)
   cout << "trans2 = " << trans2[0] << endl;
   cout << endl;
 
-
   char test1[] =
   {
     0xFF, 'a', 'b', 97, 0x20,
@@ -29,10 +28,6 @@ int main(int argc, char** argv)
 
   cout << "sizeof(test1) = " << sizeof(test1) << endl;
   cout << "sizeof(test2) = " << sizeof(test2) << endl;
-
-
-
-
 
   cout << endl;
 

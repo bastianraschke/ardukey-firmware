@@ -45,7 +45,7 @@ int main(int argc, char** argv)
   cout << " *&j = " << *&j << " (die Adresse von i)" << endl;         // -||-
   cout << endl;
 
-  // Hinweis: Das & (Adress-Zeichen) und * (Deferenzierung) heben sich immer gegenseitig auf!
+  // Hinweis: Das & (Referenzierung) und * (Dereferenzierung) heben sich immer gegenseitig auf!
 
   // Zeiger auf einen Zeiger auf eine Adresse einer Integer-Variable:
   int** k = &j;

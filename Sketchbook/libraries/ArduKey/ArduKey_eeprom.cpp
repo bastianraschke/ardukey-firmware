@@ -38,18 +38,20 @@
 
 /*
  * Dumps the complete EEPROM as hex output via Serial.
- * Thanks to http://playground.arduino.cc/Code/EepromUtil
+ * Thanks to: http://playground.arduino.cc/Code/EepromUtil
  * 
  * @return void
  *
  */
 void ArduKeyEEPROM::dumpEEPROM()
 {
+    // Buffer for sprintf
+    char buffer[16];
+
     // The byte counter in a row
     int x = 0;
 
     uint8_t currentByte;
-    char buffer[16];
 
     for (int n = EEPROM_MIN_ADDRESS; n <= EEPROM_MAX_ADDRESS; n++)
     {
@@ -99,13 +101,19 @@ bool ArduKeyEEPROM::isAddressOkay(int address)
  * 
  * @param address The address we start reading from.
  * @param ptr The pointer or array we write to.
- * @param length The length of the data.
+ * @param length The length of the data we read.
  * @return bool
  *
  */
-bool ArduKeyEEPROM::getBytes(int address, uint8_t* ptr, int length)
+bool ArduKeyEEPROM::getBytes(int address, uint8_t* ptr, size_t length)
 {
     if ( !ArduKeyEEPROM::isAddressOkay(address) || !ArduKeyEEPROM::isAddressOkay(address + length) )
+    {
+        return false;
+    }
+
+    // Sanity check
+    if ( !ptr || length == 0 )
     {
         return false;
     }
@@ -129,18 +137,19 @@ bool ArduKeyEEPROM::getBytes(int address, uint8_t* ptr, int length)
  *
  * @param address The address we start writing to.
  * @param ptr The pointer or array we read from.
- * @param length The length of the data.
+ * @param length The length of the data we write.
  * @return bool
  *
  */
-bool ArduKeyEEPROM::setBytes(int address, const uint8_t* ptr, int length)
+bool ArduKeyEEPROM::setBytes(int address, const uint8_t* ptr, size_t length)
 {
     if ( !ArduKeyEEPROM::isAddressOkay(address) || !ArduKeyEEPROM::isAddressOkay(address + length) )
     {
         return false;
     }
 
-    if ( !ptr )
+    // Sanity check
+    if ( !ptr || length == 0 )
     {
         return false;
     }
@@ -174,7 +183,7 @@ bool ArduKeyEEPROM::getAESKey(uint8_t buffer[AES_KEYSIZE])
  * @return bool
  *
  */
-bool ArduKeyEEPROM::setAESKey(uint8_t values[AES_KEYSIZE])
+bool ArduKeyEEPROM::setAESKey(const uint8_t values[AES_KEYSIZE])
 {
     return ArduKeyEEPROM::setBytes(EEPROM_AESKEY_POS, values, EEPROM_AESKEY_LEN);
 }
@@ -198,7 +207,7 @@ bool ArduKeyEEPROM::getPublicId(uint8_t buffer[ARDUKEY_PUBLICID_SIZE])
  * @return bool
  *
  */
-bool ArduKeyEEPROM::setPublicId(uint8_t values[ARDUKEY_PUBLICID_SIZE])
+bool ArduKeyEEPROM::setPublicId(const uint8_t values[ARDUKEY_PUBLICID_SIZE])
 {
     return ArduKeyEEPROM::setBytes(EEPROM_PUBLICID_POS, values, EEPROM_PUBLICID_LEN);
 }
@@ -222,7 +231,7 @@ bool ArduKeyEEPROM::getSecretId(uint8_t buffer[ARDUKEY_SECRETID_SIZE])
  * @return bool
  *
  */
-bool ArduKeyEEPROM::setSecretId(uint8_t values[ARDUKEY_SECRETID_SIZE])
+bool ArduKeyEEPROM::setSecretId(const uint8_t values[ARDUKEY_SECRETID_SIZE])
 {
     return ArduKeyEEPROM::setBytes(EEPROM_SECRETID_POS, values, EEPROM_SECRETID_LEN);
 }

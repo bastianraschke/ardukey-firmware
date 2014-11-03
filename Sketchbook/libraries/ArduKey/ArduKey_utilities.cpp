@@ -36,46 +36,32 @@
 
 
 /*
- * Dumps an given array of data via Serial output.
- * 
- * @args values: The array to dump.
- * @args length: The length of the data.
- * @return void
- *
- */
-void ArduKeyUtilities::serialDump(const uint8_t values[], size_t length)
-{
-    // Buffer for sprintf
-    char buffer[16];
-
-    for (int i = 0; i < length; i++)
-    {
-        sprintf(buffer, "0x%02X ", values[i]);
-        Serial.print(buffer);
-    }
-
-    Serial.println();
-}
-
-/*
  * Calculates the CRC16 (CRC-CCITT "0xFFFF") checksum of given data.
- * (thanks to "Antonio Pires" on https://stackoverflow.com/questions/10564491
- * and "ckielstra" on http://www.ccsinfo.com/forum/viewtopic.php?t=24977)
+ * Thanks to: "Antonio Pires" on https://stackoverflow.com/questions/10564491
+ * and: "ckielstra" on http://www.ccsinfo.com/forum/viewtopic.php?t=24977
  *
  * @args values: The array to calculate checksum of.
  * @args length: The length of processed data.
  * @return uint16_t
  *
  */
-uint16_t ArduKeyUtilities::CRC16(const uint8_t values[], int length)
+uint16_t ArduKeyUtilities::CRC16(const uint8_t values[], size_t length)
 {
-    uint8_t x;
     uint16_t crc = 0xFFFF;
+
+    // Sanity check
+    if ( !values || length == 0 )
+    {
+        return crc;
+    }
+
+    uint8_t x;
 
     for (int i = 0; i < length; i++)
     {
-        x = crc >> 8 ^ values[i];
-        x ^= x >> 4;
+        x = (crc >> 8) ^ values[i];
+        x = x ^ (x >> 4);
+
         crc = (crc << 8) ^ ((uint16_t) (x << 12)) ^ ((uint16_t) (x << 5)) ^ ((uint16_t) x);
     }
 
@@ -83,9 +69,8 @@ uint16_t ArduKeyUtilities::CRC16(const uint8_t values[], int length)
 }
 
 /*
- * Converts a given array to an array that will contain the two hexadezimal
- * representation chars per char.
- * (thanks to "K-ballo" on https://stackoverflow.com/questions/10723403)
+ * Converts a given array to an array that will contain the two hexadezimal representation chars per char.
+ * Thanks to: "K-ballo" on https://stackoverflow.com/questions/10723403
  *
  * Important:
  * The destination array must be sized N*2 + 1 in comparison to source array (N).
@@ -96,10 +81,16 @@ uint16_t ArduKeyUtilities::CRC16(const uint8_t values[], int length)
  * @return void
  *
  */
-void ArduKeyUtilities::convertToHex(const char src[], char dst[], int srcLength)
+void ArduKeyUtilities::convertToHex(const char src[], char dst[], size_t srcLength)
 {
-    // The special transforming table
+    // Sanity check
+    if ( !src || !dst || srcLength == 0 )
+    {
+        return ;
+    }
+
     // TODO: Own name and table
+    // The special transforming table
     const char table[16] =
     {
         'c', 'b', 'd', 'e', 'f', 'g', 'h', 'i',
@@ -121,5 +112,34 @@ void ArduKeyUtilities::convertToHex(const char src[], char dst[], int srcLength)
         dst[b++] = table[ (currentSrcByte & 0x0f) >> 0 ];
     }
 
+    // Add Null-Byte at last position
     dst[b] = '\0';
+}
+
+/*
+ * Dumps an given array of data via Serial output.
+ * 
+ * @args values: The array to dump.
+ * @args length: The length of the array.
+ * @return void
+ *
+ */
+void ArduKeyUtilities::serialDump(const uint8_t values[], size_t length)
+{
+    // Sanity check
+    if ( !values || length == 0 )
+    {
+        return ;
+    }
+
+    // Buffer for sprintf
+    char buffer[16];
+
+    for (int i = 0; i < length; i++)
+    {
+        sprintf(buffer, "%02X ", values[i]);
+        Serial.print(buffer);
+    }
+
+    Serial.println();
 }

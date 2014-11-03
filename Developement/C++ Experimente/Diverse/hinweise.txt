@@ -77,8 +77,7 @@ Speicherklassen für Variablen:
 - static: verhindert, dass eine Variable nach Verlassen einer Funktion gelöscht wird bis diese in der Funktion geändert wird
 - auto: (Voreinstellung für lokale Variablen): nach Verlassen einer Funktion wird diese gelöscht
 - extern: Diese Variable wurde schon in anderem Modul definiert und dadurch nun deklariert
-- register: Vorschlag an den Compiler, diese Variable im Prozessorregister statt normalen Stacksegment abzulegen
-            -> schneller, aber es gibt KEINE normalen Adresse
+- register: Vorschlag an den Compiler, diese Variable im Prozessorregister statt normalen Stacksegment abzulegen -> schneller, aber es gibt KEINE normalen Adresse
 - volatile: Variable auf keinen Fall im Prozessorregister ablegen
 
 ---
@@ -102,9 +101,9 @@ static unsigned char* returnValue;
 
 Regel: Übergabe als Zeiger statt Wertübergabe
 
+- generell: Arrays
 - wenn Veriable verändert werden sollt
-- wenn nicht: und KEIN Basistyp und größer als 4 Bytes (+ readonly via Zeiger auf konstante Daten)
-- Arrays
+- wenn nicht: und KEIN Basistyp und größer als 4 Bytes (dann: readonly via "Zeiger auf konstante Daten")
 
 ---
 
@@ -154,7 +153,7 @@ int* myPointer = NULL;
 
 Überprüfung von Zeigern:
 
-Es muss bei jedem Zeiger geprüft werden, ob dieser gültig ist:
+Es muss bei JEDEM Zeiger geprüft werden, ob dieser gültig ist:
 
 if ( !ptr )
 {
@@ -173,7 +172,7 @@ Daher kann einer Zeigervariable wie in diesem Beispiel kein Integer-Wert zugewie
 
 ---
 
-Konstante zeiger:
+Konstante Zeiger:
 
 Das Schlüsselwort const kann auf zweierlei Arten in Verbindung mit Zeigern genutzt werden:
 - Um den Wert, auf den der Zeiger zeigt, konstant zu machen
@@ -226,7 +225,7 @@ Vorsicht bei Makros:
 
 quadrat(2 + 2) // 8 statt 16, da 2 + 2 * 2 + 2
 
-Vorteile/Nachteile von Makros:
+Vorteile und Nachteile von Makros:
 
 - schneller, da keine Definition etc. zur Laufzeit
 - Programm wird größer, durch Ersetzung überall wenn Makro groß

@@ -33,10 +33,10 @@
 
 
 // Limit for Arduino EEPROM (may be different on the Arduino models)
-// 512 Bytes should be the lowest limit of usual Arduino models (the ATmega168).
+// 512 Bytes should be the lowest limit (ATmega168) of usual Arduino models.
 // Refering to: http://arduino.cc/en/pmwiki.php?n=Reference/EEPROM
 #define EEPROM_MIN_ADDRESS 0
-#define EEPROM_MAX_ADDRESS 512 - 1
+#define EEPROM_MAX_ADDRESS 511
 
 // Data position definitions
 //
@@ -59,17 +59,17 @@ class ArduKeyEEPROM
 
         static void dumpEEPROM();
 
-        static bool getBytes(int startAddress, uint8_t* ptr, int length);
-        static bool setBytes(int startAddress, const uint8_t* ptr, int length);
+        static bool getBytes(int startAddress, uint8_t* ptr, size_t length);
+        static bool setBytes(int startAddress, const uint8_t* ptr, size_t length);
 
         static bool getAESKey(uint8_t buffer[AES_KEYSIZE]);
-        static bool setAESKey(uint8_t values[AES_KEYSIZE]);
+        static bool setAESKey(const uint8_t values[AES_KEYSIZE]);
 
         static bool getPublicId(uint8_t buffer[ARDUKEY_PUBLICID_SIZE]);
-        static bool setPublicId(uint8_t values[ARDUKEY_PUBLICID_SIZE]);
+        static bool setPublicId(const uint8_t values[ARDUKEY_PUBLICID_SIZE]);
 
         static bool getSecretId(uint8_t buffer[ARDUKEY_SECRETID_SIZE]);
-        static bool setSecretId(uint8_t values[ARDUKEY_SECRETID_SIZE]);
+        static bool setSecretId(const uint8_t values[ARDUKEY_SECRETID_SIZE]);
 
         static uint16_t getCounter();
         static void setCounter(uint16_t);

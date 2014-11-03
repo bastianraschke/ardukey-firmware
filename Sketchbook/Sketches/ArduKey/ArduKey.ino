@@ -82,6 +82,7 @@ void incrementSessionCounter()
  */
 void incrementTimestamp()
 {
+    // Combines high and low part to 24 Byte integer
     uint32_t timestamp = (token.timestamp_h << 8) | (token.timestamp_l << 0);
     timestamp += 1;
 
@@ -144,7 +145,7 @@ void initializeArduKey()
  */
 bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 {
-    // Sets some random entropy (range 0..66535)
+    // Gets some random entropy (range 0..66535)
     token.random = random(65536);
 
     // Calculates CRC16 checksum of raw token
@@ -153,6 +154,7 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 
     #ifdef ARDUKEY_DEBUG
         // Prints raw token
+        Serial.println("Raw token:");
         ArduKeyUtilities::serialDump((uint8_t*) &token, sizeof(token));
     #endif
 
@@ -169,7 +171,8 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     memcpy(otp.encryptedRawToken, cipher, sizeof(cipher));
 
     #ifdef ARDUKEY_DEBUG
-        // DEBUG: Print OTP struct
+        // Prints OTP struct
+        Serial.println("Complete OTP:");
         ArduKeyUtilities::serialDump((uint8_t*) &otp, sizeof(otp));
     #endif
 
@@ -196,9 +199,9 @@ void setup()
         // Only needed for Arduino Leonardo and Micro:
         // Do nothing until the Serial is not open
         // while (!Serial);
+        Serial.println("Initializing ArduKey...");
     #endif
 
-    Serial.println("Initializing ArduKey...");
     initializeArduKey();
 
     // Configures button pin as an input and enable the internal 20K Ohm pull-up resistor

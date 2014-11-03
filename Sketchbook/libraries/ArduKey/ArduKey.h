@@ -34,10 +34,14 @@
 // Include integer type aliases
 #include <inttypes.h>
 
+// Include default types like size_t
+#include <stdlib.h>
+
 
 // ArduKey debugging
 //
 
+// Uncomment to enable debugging:
 // #define ARDUKEY_DEBUG 1
 
 

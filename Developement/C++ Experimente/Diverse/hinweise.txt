@@ -9,16 +9,17 @@ oder:
 
 memcpy(temp_iv, my_iv, 16);
 
-----
+---
 
 https://stackoverflow.com/questions/75191/what-is-an-unsigned-char
 
 If you are using character types for text, use the unqualified char:
 it is the type of character literals like 'a' or '0'.
 
-It also works out as a number value, but it is unspecified whether that value is treated as signed or unsigned. Beware character comparisons through inequalities - although if you limit yourself to ASCII (0-127) you're just about safe.
+It also works out as a number value, but it is unspecified whether that value is treated as signed or unsigned.
+Beware character comparisons through inequalities - although if you limit yourself to ASCII (0-127) you're just about safe.
 
-If you are using character types as numbers, use:
+Short: If you are using character types as numbers, use:
 - signed char, which gives you at least the -127 to 127 range. (-128 to 127 is common)
 - unsigned char, which gives you at least the 0 to 255 range.
 
@@ -48,25 +49,62 @@ uint16_t 	= unsigned int
 uint32_t	= unsigned long int
 uint64_t	= unsigned long long
 
+---
+
+Vorteil von Typ-Alias: size_t
+
+- gut da, positive, ganzzahlige Größe
+
 ---  
 
 The difference is in the location where the preprocessor searches for the included file.
 
-For #include "filename" the preprocessor searches in the same directory as the file containing the directive. This method is normally used to include programmer-defined header files.
+For #include "filename" the preprocessor searches in the same directory as the file containing the directive.
+This method is normally used to include programmer-defined header files.
 
-For #include <filename> the preprocessor searches in an implementation dependent manner, normally in directories pre-designated by the compiler. This method is normally used to include standard library header files.
+For #include <filename> the preprocessor searches in an implementation dependent manner,
+normally in directories pre-designated by the compiler. This method is normally used to include standard library header files.
+
+---
+
+Speicherklassen für Funktionen:
+
+- static: verhindert, dass die Funktion außerhalb des Moduls (Datei) sichtbar ist
+- extern: globale Sichtbarkeit
+
+Speicherklassen für Variablen:
+
+- static: verhindert, dass eine Variable nach Verlassen einer Funktion gelöscht wird bis diese in der Funktion geändert wird
+- auto: (Voreinstellung für lokale Variablen): nach Verlassen einer Funktion wird diese gelöscht
+- extern: Diese Variable wurde schon in anderem Modul definiert und dadurch nun deklariert
+- register: Vorschlag an den Compiler, diese Variable im Prozessorregister statt normalen Stacksegment abzulegen
+            -> schneller, aber es gibt KEINE normalen Adresse
+- volatile: Variable auf keinen Fall im Prozessorregister ablegen
 
 ---
 
 Achtung: Referenzen als Rückgabetyp
 
-Referenzen haben als Rückgabewert die gleichen Vorteile wie bei der Wertübergabe. Allerdings sind sie in diesem Zusammenhang wesentlich gefährlicher. Es kann schnell passieren, dass Sie versehentlich eine Referenz auf eine lokale Variable zurückgeben. Diese Variable ist außerhalb der Funktion allerdings nicht mehr gültig, daher ist das Resultat, wenn Sie außerhalb der Funktion darauf zugreifen, undefiniert. Aus diesem Grund sollten Sie Referenzen als Rückgabewert nur verwenden wenn Sie wirklich wissen, was Sie tun.
+Referenzen haben als Rückgabewert die gleichen Vorteile wie bei der Wertübergabe.
+Allerdings sind sie in diesem Zusammenhang wesentlich gefährlicher.
+Es kann schnell passieren, dass Sie versehentlich eine Referenz auf eine lokale Variable zurückgeben.
+Diese Variable ist außerhalb der Funktion allerdings nicht mehr gültig,
+daher ist das Resultat, wenn Sie außerhalb der Funktion darauf zugreifen, undefiniert.
+Aus diesem Grund sollten Sie Referenzen als Rückgabewert nur verwenden wenn Sie wirklich wissen, was Sie tun.
 
 // Achtung: Ohne static würde die Adresse nach außen gegeben werden: GEFÄHRLICH!
 static int returnValue[8];
 
 // Achtung: Ohne static würde die Adresse nach außen gegeben werden: GEFÄHRLICH!
 static unsigned char* returnValue;
+
+---
+
+Regel: Übergabe als Zeiger statt Wertübergabe
+
+- wenn Veriable verändert werden sollt
+- wenn nicht: und KEIN Basistyp und größer als 4 Bytes (+ readonly via Zeiger auf konstante Daten)
+- Arrays
 
 ---
 
@@ -97,16 +135,31 @@ int (*m)[6];      // m ist ein Zeiger auf ein Array von sechs Elementen des Typs
 ---
 
 Ein Pointertyp, dem man jede beliebige Adresse zuweisen kann, ist der Pointer auf void: 
-void *pvoid;
+void *ptr;
 
 ---
 
 Uninitialisierte Zeiger
 
-Falls eine Zeigervariable dereferenziert wird, die nicht auf einen gültigen Speicherbereich des entsprechenden Typs zeigt, kann es ebenfalls zu unerwartetem Verhalten kommen. So kann eine Situation auftreten, wenn eine Variable vor ihrer Benutzung nicht auf einen gültigen Wert initialisiert wurde oder wenn sie noch auf eine Speicheradresse verweist, die nicht mehr gültig ist (wilder Zeiger). Zeigt der Zeiger nicht auf eine gültige Speicheradresse, kann es wie beim Nullzeiger zu einer Schutzverletzung kommen.
+Falls eine Zeigervariable dereferenziert wird, die nicht auf einen gültigen Speicherbereich
+des entsprechenden Typs zeigt  kann es ebenfalls zu unerwartetem Verhalten kommen.
+So kann eine Situation auftreten, wenn eine Variable vor ihrer Benutzung nicht auf einen gültigen Wert initialisiert wurde
+oder wenn sie noch auf eine Speicheradresse verweist, die nicht mehr gültig ist (wilder Zeiger).
+Zeigt der Zeiger nicht auf eine gültige Speicheradresse, kann es wie beim Nullzeiger zu einer Schutzverletzung kommen.
 
 Ihre Deklaration sollte also wie folgt aussehen:
 int* myPointer = NULL;
+
+---
+
+Überprüfung von Zeigern:
+
+Es muss bei jedem Zeiger geprüft werden, ob dieser gültig ist:
+
+if ( !ptr )
+{
+    // BAD Pointer
+}
 
 ---
 
@@ -115,7 +168,8 @@ int Wert;
 pWert = Wert;     // dem Zeiger kann kein int zugewiesen werden
 Wert  = pWert;    // umgekehrt natürlich auch nicht
 
-Zeigervariablen erlauben als Wert nur Adressen auf Variablen. Daher kann einer Zeigervariable wie in diesem Beispiel kein Integer-Wert zugewiesen werden.
+Zeigervariablen erlauben als Wert nur Adressen auf Variablen.
+Daher kann einer Zeigervariable wie in diesem Beispiel kein Integer-Wert zugewiesen werden.
 
 ---
 
@@ -135,25 +189,6 @@ const int* const x; // Konstanter Zeiger auf konstantes Integer
 
 ---
 
-int               Wert1;           // eine int-Variable
-int               Wert2;           // noch eine int-Variable
-int const *       p1Wert = &Wert1; // Zeiger auf konstanten int
-int * const       p2Wert = &Wert1; // konstanter Zeiger auf int
-int const * const p3Wert = &Wert1; // konstanter Zeiger auf konstanten int
-
-p1Wert  = &Wert2; // geht
-*p1Wert = Wert2;  // geht nicht, int konstant
-
-p2Wert  = &Wert2; // geht nicht, Zeiger konstant
-*p2Wert = Wert2;  // geht
-
-p3Wert  = &Wert2; // geht nicht, Zeiger konstant
-*p3Wert = Wert2;  // geht nicht, int konstant
-
-Wie Sie sich sicher noch erinnern, gehört const immer zu dem was links von ihm steht. Es sei denn links steht nichts mehr, dann gehört es zu dem was rechts davon steht.
-
----
-
 lieber:
 var + 1 statt var++ verwenden wenn nicht unbedingt benötigt
 
@@ -164,3 +199,34 @@ https://en.wikibooks.org/wiki/C_Programming/Pointers_and_arrays#sizeof
 
 Note that the sizeof operator only works on things defined earlier in the same function. The compiler replaces it with some fixed constant number.
 The information about the length of array is not actually stored anywhere in memory (unless we keep track of it separately).
+
+---
+
+Implizite Typumwandlung:
+
+int i1 = 10;
+int i2 = 4;
+int i3 = 30;
+
+float f1 = i1 / i2;         // 2.00
+float f2 = i3 / i2;         // 7.00
+float f3 = i1 / i2 * 3;     // 6.00
+
+Erklärung:
+Es wird zunächst die Integer-Operation durchgeführt und dann in den Ziel-Typ konvertiert.
+Wenn mindestens eine Zahl ein Fließkommawert ist, wird komplett mit Fließkomma gerechnet.
+
+---
+
+Vorsicht bei Makros:
+- Es findet KEINE Typ-Überprüfung statt (nur 1:1 Zeichenkettenersetzung)
+- Ohne Klammerung bei arithmetischen Ausdrücken: Rechenfehler möglich:
+
+#define quadrat(x) x * x
+
+quadrat(2 + 2) // 8 statt 16, da 2 + 2 * 2 + 2
+
+Vorteile/Nachteile von Makros:
+
+- schneller, da keine Definition etc. zur Laufzeit
+- Programm wird größer, durch Ersetzung überall wenn Makro groß

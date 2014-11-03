@@ -43,7 +43,7 @@
  * @return void
  *
  */
-void ArduKeyUtilities::serialDump(const uint8_t values[], int length)
+void ArduKeyUtilities::serialDump(const uint8_t values[], size_t length)
 {
     // Buffer for sprintf
     char buffer[16];

@@ -36,7 +36,7 @@ class ArduKeyUtilities
 {
     public:
 
-        static void serialDump(const uint8_t values[], int length);
+        static void serialDump(const uint8_t values[], int size_t);
 
         static uint16_t CRC16(const uint8_t values[], int length);
         static void convertToHex(const char src[], char dst[], int srcSize);

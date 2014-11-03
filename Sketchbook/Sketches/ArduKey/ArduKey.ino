@@ -195,7 +195,7 @@ void setup()
     #ifdef ARDUKEY_DEBUG
         // Only needed for Arduino Leonardo and Micro:
         // Do nothing until the Serial is not open
-        while (!Serial);
+        // while (!Serial);
     #endif
 
     Serial.println("Initializing ArduKey...");

@@ -1,0 +1,52 @@
+##########tinyUSBboard (Rev.2 and previous)###(magic=0xfe65a980)#####################
+oldtinyUSBboard.name=tinyUSBboard (USBaspLoader ATmega8 at 16MHz, Rev.2 and previous)
+oldtinyUSBboard.upload.protocol=usbasp
+oldtinyUSBboard.upload.maximum_size=6144
+oldtinyUSBboard.upload.speed=115200
+oldtinyUSBboard.upload.disable_flushing=true
+oldtinyUSBboard.bootloader.low_fuses=0x1F
+oldtinyUSBboard.bootloader.high_fuses=0xC0
+oldtinyUSBboard.bootloader.path=tinyUSBboard
+oldtinyUSBboard.bootloader.file=tinyUSBboard_atmega8_16mhz_rev3.hex
+oldtinyUSBboard.bootloader.unlock_bits=0x3F
+oldtinyUSBboard.bootloader.lock_bits=0x3F
+oldtinyUSBboard.build.mcu=atmega8
+oldtinyUSBboard.build.f_cpu=16000000L
+oldtinyUSBboard.build.core=arduino:arduino
+oldtinyUSBboard.build.variant=oldtinyusbboard
+
+
+
+##########tinyUSBboard (Rev.3 and future)###(magic=0xfe9a5680)#######################
+newtinyUSBboard.name=tinyUSBboard (USBaspLoader ATmega328p at 16MHz, Rev.3 and newer)
+newtinyUSBboard.upload.protocol=usbasp
+newtinyUSBboard.upload.maximum_size=28672
+newtinyUSBboard.upload.speed=115200
+newtinyUSBboard.upload.disable_flushing=true
+newtinyUSBboard.bootloader.low_fuses=0xD7
+newtinyUSBboard.bootloader.high_fuses=0xD0
+newtinyUSBboard.bootloader.extended_fuses=0x04
+newtinyUSBboard.bootloader.path=tinyUSBboard
+newtinyUSBboard.bootloader.file=tinyUSBboard_atmega328p_16mhz_rev3.hex
+newtinyUSBboard.bootloader.unlock_bits=0x3F
+newtinyUSBboard.bootloader.lock_bits=0x3F
+newtinyUSBboard.build.mcu=atmega328p
+newtinyUSBboard.build.f_cpu=16000000L
+newtinyUSBboard.build.core=arduino:arduino
+newtinyUSBboard.build.variant=tinyusbboard
+
+tinyUSBboard.name=tinyUSBboard (USBaspLoader ATmega8 at 16MHz, Rev.3 and newer)
+tinyUSBboard.upload.protocol=usbasp
+tinyUSBboard.upload.maximum_size=6144
+tinyUSBboard.upload.speed=115200
+tinyUSBboard.upload.disable_flushing=true
+tinyUSBboard.bootloader.low_fuses=0x1F
+tinyUSBboard.bootloader.high_fuses=0xC0
+tinyUSBboard.bootloader.path=tinyUSBboard
+tinyUSBboard.bootloader.file=tinyUSBboard_atmega8_16mhz_rev2.hex
+tinyUSBboard.bootloader.unlock_bits=0x3F
+tinyUSBboard.bootloader.lock_bits=0x3F
+tinyUSBboard.build.mcu=atmega8
+tinyUSBboard.build.f_cpu=16000000L
+tinyUSBboard.build.core=arduino:arduino
+tinyUSBboard.build.variant=tinyusbboard

@@ -37,12 +37,15 @@
 // Include default types like size_t
 #include <stdlib.h>
 
+// For sprintf(), Serial:
+#include <Arduino.h>
+
 
 // ArduKey debugging
 //
 
 // Uncomment to enable debugging:
-// #define ARDUKEY_DEBUG 1
+#define ARDUKEY_DEBUG 1
 
 
 // ArduKey general definitions
@@ -63,7 +66,7 @@
 //
 
 // Update interval of timestamp in µs
-// 8Hz in this case (1000000 / 8)
+// 8 Hz in this case (1000000 / 8)
 #define TIMERONE_TIMESTAMPUPDATE 125000
 
 
@@ -127,7 +130,7 @@ ardukey_otp_t;
 
 
 // Includes all ArduKey library files
-#include "ArduKey_eeprom.h"
-#include "ArduKey_utilities.h"
+#include "ArduKeyEEPROM.h"
+#include "ArduKeyUtilities.h"
 
 #endif

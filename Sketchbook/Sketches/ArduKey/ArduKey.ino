@@ -28,17 +28,17 @@
  *
  */
 
-#include <ArduKey.h>
+#include "ArduKey.h"
+
 #include <AES.h>
 #include <TimerOne.h>
-
+#include <VUSBHIDKeyboardMouse.h>
 
 AES aes;
 
 ardukey_token_t token;
 ardukey_otp_t otp;
 
-int previousButtonState = HIGH;
 
 /*
  * Increments the non-volatile counter value.
@@ -153,7 +153,6 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     token.crc = ArduKeyUtilities::CRC16((uint8_t*) &token, ARDUKEY_BLOCKSIZE - 2);
 
     #ifdef ARDUKEY_DEBUG
-        // Prints raw token
         Serial.println("Raw token:");
         ArduKeyUtilities::serialDump((uint8_t*) &token, sizeof(token));
     #endif
@@ -171,7 +170,6 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     memcpy(otp.encryptedRawToken, cipher, sizeof(cipher));
 
     #ifdef ARDUKEY_DEBUG
-        // Prints OTP struct
         Serial.println("Complete OTP:");
         ArduKeyUtilities::serialDump((uint8_t*) &otp, sizeof(otp));
     #endif
@@ -193,12 +191,8 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
  */
 void setup()
 {
-    Serial.begin(57600);
-
     #ifdef ARDUKEY_DEBUG
-        // Only needed for Arduino Leonardo and Micro:
-        // Do nothing until the Serial is not open
-        // while (!Serial);
+        Serial.begin(57600);
         Serial.println("Initializing ArduKey...");
     #endif
 
@@ -208,6 +202,8 @@ void setup()
     pinMode(ARDUKEY_PIN_BUTTON, INPUT_PULLUP);
 }
 
+int previousButtonState = HIGH;
+
 /*
  * The Arduino loop method.
  * 
@@ -216,6 +212,8 @@ void setup()
  */
 void loop() 
 {
+    VUSBHIDKeyboardMouse.update(1);
+
     char otp[ARDUKEY_OTP_SIZE] = "";
 
     // Gets current button state
@@ -223,14 +221,16 @@ void loop()
 
     if ( buttonState != previousButtonState && buttonState == HIGH )
     {
-        // Initializes control over the keyboard
-        Keyboard.begin();
-
         generateOneTimePad(otp);
-        Keyboard.print(otp);
 
-        // Ends keyboard control
-        Keyboard.end();
+        #ifdef ARDUKEY_DEBUG
+            Serial.println(otp);
+        #endif
+
+        for (int i = 0; i < sizeof(otp); i++)
+        {
+            UsbKeyboard.sendKey(otp[i]);
+        }
     }
   
     previousButtonState = buttonState;

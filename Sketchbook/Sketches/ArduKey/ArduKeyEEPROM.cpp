@@ -29,10 +29,8 @@
  */
 
 #include "ArduKey.h"
-#include "ArduKey_eeprom.h"
+#include "ArduKeyEEPROM.h"
 
-// For sprintf(), Serial:
-#include <Arduino.h>
 #include <avr/eeprom.h>
 
 

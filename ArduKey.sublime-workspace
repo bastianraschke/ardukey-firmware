@@ -23,7 +23,7 @@
 			"file": "Sketchbook/Sketches/ArduKey/ArduKey.ino",
 			"settings":
 			{
-				"buffer_size": 4579,
+				"buffer_size": 6297,
 				"line_ending": "Unix"
 			}
 		},
@@ -31,15 +31,7 @@
 			"file": "Sketchbook/libraries/ArduKey/ArduKey.h",
 			"settings":
 			{
-				"buffer_size": 1444,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/home/bastian/Projekte/Computer und Technik/Arduino/ArduKey/Developement/Arduino Yubikey clone/arduino-yksim-master/examples/YKS/yksTouch1/yksTouch1.ino",
-			"settings":
-			{
-				"buffer_size": 4845,
+				"buffer_size": 3279,
 				"line_ending": "Unix"
 			}
 		}
@@ -96,6 +88,7 @@
 	],
 	"file_history":
 	[
+		"/home/bastian/Projekte/Computer und Technik/Arduino/ArduKey/Developement/Arduino Yubikey clone/arduino-yksim-master/examples/YKS/yksTouch1/yksTouch1.ino",
 		"/home/bastian/Desktop/yubikey.txt",
 		"/home/bastian/Desktop/ArduKey/Developement/Web dev/mcrypt.php",
 		"/home/bastian/Projekte/Computer und Technik/Arduino/ArduKey/Sketchbook/libraries/ArduKey/ArduKey_eeprom.h",
@@ -218,15 +211,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4579,
+						"buffer_size": 6297,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								179,
-								176
+								0,
+								0
 							]
 						],
 						"settings":
@@ -248,7 +241,7 @@
 					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 1444,
+						"buffer_size": 3279,
 						"regions":
 						{
 						},
@@ -270,36 +263,6 @@
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "/home/bastian/Projekte/Computer und Technik/Arduino/ArduKey/Developement/Arduino Yubikey clone/arduino-yksim-master/examples/YKS/yksTouch1/yksTouch1.ino",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4845,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Arduino-like IDE/Arduino.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2430.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
 					"type": "text"
 				}
 			]

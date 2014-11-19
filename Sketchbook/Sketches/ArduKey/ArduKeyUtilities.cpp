@@ -29,10 +29,7 @@
  */
 
 #include "ArduKey.h"
-#include "ArduKey_utilities.h"
-
-// For sprintf(), Serial:
-#include <Arduino.h>
+#include "ArduKeyUtilities.h"
 
 
 /*

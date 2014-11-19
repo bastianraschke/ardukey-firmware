@@ -96,11 +96,11 @@ typedef struct
     // 1 Byte
     uint8_t session;
 
-    // The nonvolatile timestamp (high part)
+    // The non-volatile timestamp (high part)
     // 2 Bytes
     uint16_t timestamp_h;
 
-    // The nonvolatile timestamp (low part)
+    // The non-volatile timestamp (low part)
     // 1 Byte
     uint8_t timestamp_l;
 
@@ -114,7 +114,7 @@ typedef struct
 }
 ardukey_token_t;
 
-// The finished OTP structure
+// The final OTP structure
 typedef struct
 {
     // The public id part

@@ -258,7 +258,7 @@ uint16_t ArduKeyEEPROM::getCounter()
  */
 void ArduKeyEEPROM::setCounter(uint16_t value)
 {
-    // uint16_t value // 2 Bytes
+    // Argument: uint16_t value // 2 Bytes
     uint8_t* ptr = (uint8_t*) &value; // 1 Byte
 
     ArduKeyEEPROM::setBytes(EEPROM_COUNTER_POS, ptr, EEPROM_COUNTER_LEN);

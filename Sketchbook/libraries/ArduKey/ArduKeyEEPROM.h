@@ -72,7 +72,7 @@ class ArduKeyEEPROM
         static bool setSecretId(const uint8_t values[ARDUKEY_SECRETID_SIZE]);
 
         static uint16_t getCounter();
-        static void setCounter(uint16_t);
+        static void setCounter(uint16_t value);
 
     private:
 

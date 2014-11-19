@@ -34,8 +34,9 @@
 
 /*
  * Calculates the CRC16 (CRC-CCITT "0xFFFF") checksum of given data.
+ *
  * Thanks to: "Antonio Pires" on https://stackoverflow.com/questions/10564491
- * and: "ckielstra" on http://www.ccsinfo.com/forum/viewtopic.php?t=24977
+ * Thanks to: "ckielstra" on http://www.ccsinfo.com/forum/viewtopic.php?t=24977
  *
  * @args values: The array to calculate checksum of.
  * @args length: The length of processed data.
@@ -67,6 +68,7 @@ uint16_t ArduKeyUtilities::CRC16(const uint8_t values[], size_t length)
 
 /*
  * Converts a given array to an array that will contain the two hexadezimal representation chars per char.
+ *
  * Thanks to: "K-ballo" on https://stackoverflow.com/questions/10723403
  *
  * Important:
@@ -86,7 +88,7 @@ void ArduKeyUtilities::convertToHex(const char src[], char dst[], size_t srcLeng
         return ;
     }
 
-    // TODO: Own name and table
+    // TODO: Own table
     // The special transforming table
     const char table[16] =
     {

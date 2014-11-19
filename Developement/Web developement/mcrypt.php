@@ -1,34 +1,29 @@
 <?php
 
-# convert a string into a key
-# key is specified using hexadecimal
-$key_hexstring = "06000000000000000000000000000006";
+/*
+ * Example OTP:
+ * clhbvedrgtnfubdnivcnblugglkrbcjdeuijivfjkddg
+ *
+ * Decoded OTP (Modhex -> hex):
+ * Use https://demo.yubico.com/modhex.php for Modhex decoding
+ * 0a61f32c5db4e12b7f0b1ae55a9c10823e787f489225
+ *
+ * Public id: 0a61f32c5db4
+ * Encrypted token: e12b7f0b1ae55a9c10823e787f489225
+ *
+ */
+
+// The 128 bit key in hexadecimal style:
+$key_hexstring = "7A1858592FCB76BD5EB2685421AED45E";
 $key = pack('H*', $key_hexstring);
 
-$key_size = strlen($key);
-echo "Key size: " . $key_size . "\n";
+echo "Key size: " . strlen($key) . "\n";
 
-
-/*
-$input = pack('H*', "CCCCCCCCCCCC07000000EEFFBBAA0A86");
+// The encrypted token in hexadecimal style:
+$input = pack('H*', "e12b7f0b1ae55a9c10823e787f489225");
 var_dump(unpack('H*', $input));
-
-$output = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $input, MCRYPT_MODE_ECB);
-var_dump(unpack('H*', $output));
-
-$input = $output;
-
-*/
-
-$input = pack('H*', "bfb60ed19ed7f2ed644563dd3bbb952b");
-var_dump(unpack('H*', $input));
-
 
 $output = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $input, MCRYPT_MODE_ECB);
 var_dump(unpack('H*', $output));
-
-
-
-
 
 ?>

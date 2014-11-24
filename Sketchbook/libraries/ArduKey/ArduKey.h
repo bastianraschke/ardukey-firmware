@@ -24,13 +24,13 @@
 //
 
 // Uncomment to enable debugging:
-#define ARDUKEY_DEBUG 1
+// #define ARDUKEY_DEBUG 1
 
 
 // ArduKey general definitions
 //
 
-#define ARDUKEY_PIN_BUTTON 2
+#define ARDUKEY_PIN_BUTTON 6
 
 #define ARDUKEY_BLOCKSIZE 16
 

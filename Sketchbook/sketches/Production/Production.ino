@@ -191,13 +191,14 @@ int previousButtonState = HIGH;
  */
 void loop() 
 {
-    // VUSBHIDKeyboardMouse.update(1);
+    VUSBHIDKeyboardMouse.update();
 
     char otp[ARDUKEY_OTP_SIZE] = "";
 
     // Gets current button state
     int buttonState = digitalRead(ARDUKEY_PIN_BUTTON);
 
+    // Checks if button state changed
     if ( buttonState != previousButtonState && buttonState == LOW )
     {
         generateOneTimePad(otp);
@@ -207,16 +208,16 @@ void loop()
             Serial.println();
         #endif
 
-        /*
         for (int i = 0; i < sizeof(otp); i++)
         {
             UsbKeyboard.sendKey(otp[i]);
         }
-        */
 
-        // TODO: Enter not working
-        // UsbKeyboard.sendKey(KEY_ENTER);
+        UsbKeyboard.sendKeyStroke(KEY_ENTER);
     }
+
+    // TODO: Needed?
+    // UsbKeyboard.update(4);
 
     previousButtonState = buttonState;
 }

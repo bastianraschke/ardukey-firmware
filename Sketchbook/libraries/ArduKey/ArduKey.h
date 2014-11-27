@@ -24,7 +24,10 @@
 //
 
 // Uncomment to enable debugging:
-// #define ARDUKEY_DEBUG 1
+#define ARDUKEY_DEBUG 1
+
+// Uncomment to enable keyboard functionality:
+// #define ARDUKEY_ENABLE_KEYBOARD 1
 
 
 // ArduKey general definitions

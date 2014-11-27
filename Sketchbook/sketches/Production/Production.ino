@@ -10,7 +10,10 @@
 #include <ArduKey.h>
 #include <AES.h>
 #include <TimerOne.h>
-#include <VUSBHIDKeyboardMouse.h>
+
+#ifdef ARDUKEY_ENABLE_KEYBOARD
+    #include <VUSBHIDKeyboardMouse.h>
+#endif
 
 AES aes;
 
@@ -176,7 +179,7 @@ void setup()
 
     initializeArduKey();
 
-    // Configures button pin as an input and enable the internal 20K Ohm pull-up resistor
+    // Configures button pin as an input and enable the internal 20 KOhm pull-up resistor
     pinMode(ARDUKEY_PIN_BUTTON, INPUT_PULLUP);
     digitalWrite(ARDUKEY_PIN_BUTTON, HIGH);
 }
@@ -191,7 +194,9 @@ int previousButtonState = HIGH;
  */
 void loop() 
 {
-    VUSBHIDKeyboardMouse.update();
+    #ifdef ARDUKEY_ENABLE_KEYBOARD
+        VUSBHIDKeyboardMouse.update();
+    #endif
 
     char otp[ARDUKEY_OTP_SIZE] = "";
 
@@ -204,20 +209,25 @@ void loop()
         generateOneTimePad(otp);
 
         #ifdef ARDUKEY_DEBUG
+            Serial.println("Output OTP:");
             Serial.println(otp);
             Serial.println();
         #endif
 
-        for (int i = 0; i < sizeof(otp); i++)
-        {
-            UsbKeyboard.sendKey(otp[i]);
-        }
+        #ifdef ARDUKEY_ENABLE_KEYBOARD
+            for (int i = 0; i < sizeof(otp); i++)
+            {
+                UsbKeyboard.sendKey(otp[i]);
+            }
 
-        UsbKeyboard.sendKeyStroke(KEY_ENTER);
+            UsbKeyboard.sendKeyStroke(KEY_ENTER);
+        #endif
     }
 
     // TODO: Needed?
-    // UsbKeyboard.update(4);
+    // #ifdef ARDUKEY_ENABLE_KEYBOARD
+    //     UsbKeyboard.update(4);
+    // #endif
 
     previousButtonState = buttonState;
 }

@@ -50,7 +50,7 @@ that are only licensable in compination with the GPL:
   3. the name of the copyright holder is not used to endorse products
      built using this software without specific written permission.
 
-  Unknown
+  Unknown TODO
 
 * TimerOne library by Jesse Tane; modified by Jérôme Despatis, Michael Polli
 
@@ -60,7 +60,7 @@ that are only licensable in compination with the GPL:
 * VUSBHIDKeyboardMouse Arduino library by Stephan Baerwolf
 
   License terms:
-  Unknown
+  Unknown TODO
 
 * VUSB library for Armel AVR microcontrollers by OBJECTIVE DEVELOPMENT GmbH
 

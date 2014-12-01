@@ -1,0 +1,1 @@
+- Better setup approach (no Arduino Sketch -> better direct EEPROM via avrdude) 

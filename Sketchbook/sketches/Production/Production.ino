@@ -109,7 +109,7 @@ void initializeArduKey()
     uint16_t randomSeedValue = analogRead(0);
     randomSeed(randomSeedValue);
 
-    // Increments counter
+    // Increments counter on startup
     incrementCounter();
 
     // Initializes timer library for updating timestamp
@@ -126,8 +126,8 @@ void initializeArduKey()
  */
 bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 {
-    // Gets some random entropy (range 0..66535)
-    token.random = random(65536);
+    // Gets 2 bytes random entropy (range 0..66535)
+    token.random = random(0xFFFF);
 
     // Calculates CRC16 checksum of raw token
     // (only the first 14 Bytes cause we do not want to include the checksum itself)
@@ -136,6 +136,13 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     #ifdef ARDUKEY_DEBUG
         Serial.println("Raw token:");
         ArduKeyUtilities::serialDump((uint8_t*) &token, sizeof(token));
+
+        char buffer[128];
+        sprintf(buffer,
+            "(counter = 0x%04X; session = 0x%02X; timestamp = 0x%04X%02X; random = 0x%04X; crc = 0x%04X)",
+            token.counter, token.session, token.timestamp_h, token.timestamp_l, token.random, token.crc
+        );
+        Serial.println(buffer);
     #endif
 
     // The buffer for encrypted raw token

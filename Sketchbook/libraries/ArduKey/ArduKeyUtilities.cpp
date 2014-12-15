@@ -52,14 +52,14 @@ uint16_t ArduKeyUtilities::CRC16(const uint8_t values[], size_t length)
  *
  * Important:
  * The destination array must be sized N*2 + 1 in comparison to source array (N).
- * 
+ *
  * @args dst: The source array we read from.
  * @args src: The result array we write to.
  * @args srcLength: The length of src.
  * @return void
  *
  */
-void ArduKeyUtilities::convertToHex(const char src[], char dst[], size_t srcLength)
+void ArduKeyUtilities::encodeArduHex(const char src[], char dst[], size_t srcLength)
 {
     // Sanity check
     if ( !src || !dst || srcLength == 0 )
@@ -71,8 +71,7 @@ void ArduKeyUtilities::convertToHex(const char src[], char dst[], size_t srcLeng
     // The special transforming table
     const char table[16] =
     {
-        'c', 'b', 'd', 'e', 'f', 'g', 'h', 'i',
-        'j', 'k', 'l', 'n', 'r', 't', 'u', 'v',
+        'c', 'b', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'n', 'r', 't', 'u', 'v',
     };
 
     // Source field counter
@@ -96,7 +95,7 @@ void ArduKeyUtilities::convertToHex(const char src[], char dst[], size_t srcLeng
 
 /*
  * Dumps an given array of data via Serial output.
- * 
+ *
  * @args values: The array to dump.
  * @args length: The length of the array.
  * @return void

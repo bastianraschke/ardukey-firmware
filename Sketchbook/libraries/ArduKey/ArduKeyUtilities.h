@@ -16,7 +16,7 @@ class ArduKeyUtilities
     public:
 
         static uint16_t CRC16(const uint8_t values[], size_t length);
-        static void convertToHex(const char src[], char dst[], size_t srcSize);
+        static void encodeArduHex(const char src[], char dst[], size_t srcSize);
         static void serialDump(const uint8_t values[], size_t length);
 
 };

@@ -73,7 +73,7 @@ void incrementTimestamp()
 
 /*
  * Contains all ArduKey initalizing processes.
- * 
+ *
  * @return void
  *
  */
@@ -163,7 +163,7 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     #endif
 
     // Converts full OTP (public id + encrypted raw token)
-    ArduKeyUtilities::convertToHex((char *) &otp, result, ARDUKEY_PUBLICID_SIZE + ARDUKEY_BLOCKSIZE);
+    ArduKeyUtilities::encodeArduHex((char *) &otp, result, ARDUKEY_PUBLICID_SIZE + ARDUKEY_BLOCKSIZE);
 
     // Increments session counter
     incrementSessionCounter();
@@ -173,7 +173,7 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 
 /*
  * The Arduino setup method.
- * 
+ *
  * @return void
  *
  */
@@ -195,11 +195,11 @@ int previousButtonState = HIGH;
 
 /*
  * The Arduino loop method.
- * 
+ *
  * @return void
  *
  */
-void loop() 
+void loop()
 {
     #ifdef ARDUKEY_ENABLE_KEYBOARD
         VUSBHIDKeyboardMouse.update();

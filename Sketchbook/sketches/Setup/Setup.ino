@@ -12,7 +12,7 @@
 
 /*
  * Contains all ArduKey setup processes.
- * 
+ *
  * @return void
  *
  */
@@ -32,7 +32,7 @@ void setupArduKey()
         0x00, 0x00, 0x00, 0x00, 0x00, 0x01
     };
 
-    // The secret identity that is only known by device and Auth server 
+    // The secret identity that is only known by device and Auth server
     const uint8_t secretId[ARDUKEY_SECRETID_SIZE] =
     {
         // CHANGE THIS:
@@ -82,14 +82,15 @@ void setupArduKey()
     Serial.println("Resetting persitent counter...");
 
     // Resets counter value
-    ArduKeyEEPROM::setCounter(0x0000);
+    // Important: Do not set to zero cause the auth server inits with zero!
+    ArduKeyEEPROM::setCounter(0x0001);
 
     Serial.println("All done.");
 }
 
 /*
  * The Arduino setup method.
- * 
+ *
  * @return void
  *
  */
@@ -108,11 +109,11 @@ void setup()
 
 /*
  * The Arduino loop method.
- * 
+ *
  * @return void
  *
  */
-void loop() 
+void loop()
 {
     // Nothing to do ;)
 }

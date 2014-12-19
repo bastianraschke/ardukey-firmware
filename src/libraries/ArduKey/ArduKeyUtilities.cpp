@@ -1,5 +1,5 @@
 /*
- * ArduKey - A slim OTP token device based on Arduino.
+ * ArduKey - A simple OTP device based on Arduino.
  *
  * Written by Bastian Raschke <bastian.raschke@posteo.de>
  * Copyright (C) 2014 Bastian Raschke
@@ -22,11 +22,11 @@
  * @return uint16_t
  *
  */
-uint16_t ArduKeyUtilities::CRC16(const uint8_t values[], size_t length)
+uint16_t ArduKeyUtilities::calculateCRC16(const uint8_t values[], size_t length)
 {
     uint16_t crc = 0xFFFF;
 
-    // Sanity check
+    // Pointer sanity check
     if ( !values || length == 0 )
     {
         return crc;
@@ -39,7 +39,8 @@ uint16_t ArduKeyUtilities::CRC16(const uint8_t values[], size_t length)
         x = (crc >> 8) ^ values[i];
         x = x ^ (x >> 4);
 
-        crc = (crc << 8) ^ ((uint16_t) (x << 12)) ^ ((uint16_t) (x << 5)) ^ ((uint16_t) x);
+        crc = (crc << 8) ^ (x << 12) ^ (x << 5) ^ x;
+        crc = crc & 0xFFFF;
     }
 
     return crc;
@@ -61,14 +62,13 @@ uint16_t ArduKeyUtilities::CRC16(const uint8_t values[], size_t length)
  */
 void ArduKeyUtilities::encodeArduHex(const char src[], char dst[], size_t srcLength)
 {
-    // Sanity check
+    // Pointer sanity check
     if ( !src || !dst || srcLength == 0 )
     {
         return ;
     }
 
-    // TODO: Own table
-    // The special transforming table
+    // Mapping (hexadecimal -> arduhex) table
     const char table[16] =
     {
         'c', 'b', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'n', 'r', 't', 'u', 'v',
@@ -103,7 +103,7 @@ void ArduKeyUtilities::encodeArduHex(const char src[], char dst[], size_t srcLen
  */
 void ArduKeyUtilities::serialDump(const uint8_t values[], size_t length)
 {
-    // Sanity check
+    // Pointer sanity check
     if ( !values || length == 0 )
     {
         return ;

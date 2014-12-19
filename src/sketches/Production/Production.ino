@@ -1,5 +1,5 @@
 /*
- * ArduKey - A slim OTP token device based on Arduino.
+ * ArduKey - A simple OTP device based on Arduino.
  *
  * Written by Bastian Raschke <bastian.raschke@posteo.de>
  * Copyright (C) 2014 Bastian Raschke
@@ -7,11 +7,11 @@
  *
  */
 
-#include <ArduKey.h>
 #include <AES.h>
+#include <ArduKey.h>
 #include <TimerOne.h>
 
-#ifdef ARDUKEY_ENABLE_KEYBOARD
+#if ARDUKEY_ENABLE_KEYBOARD == 1
     #include <VUSBHIDKeyboardMouse.h>
 #endif
 
@@ -19,7 +19,6 @@ AES aes;
 
 ardukey_token_t token;
 ardukey_otp_t otp;
-
 
 /*
  * Increments the non-volatile counter value.
@@ -131,9 +130,9 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 
     // Calculates CRC16 checksum of raw token
     // (only the first 14 Bytes cause we do not want to include the checksum itself)
-    token.crc = ArduKeyUtilities::CRC16((uint8_t*) &token, ARDUKEY_BLOCKSIZE - 2);
+    token.crc = ArduKeyUtilities::calculateCRC16((uint8_t*) &token, ARDUKEY_TOKEN_SIZE - 2);
 
-    #ifdef ARDUKEY_DEBUG
+    #if ARDUKEY_DEBUG == 1
         Serial.println("Raw token:");
         ArduKeyUtilities::serialDump((uint8_t*) &token, sizeof(token));
 
@@ -157,13 +156,13 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     // Copy encrypted raw token to OTP struct
     memcpy(otp.encryptedRawToken, cipher, sizeof(cipher));
 
-    #ifdef ARDUKEY_DEBUG
+    #if ARDUKEY_DEBUG == 1
         Serial.println("Complete OTP:");
         ArduKeyUtilities::serialDump((uint8_t*) &otp, sizeof(otp));
     #endif
 
-    // Converts full OTP (public id + encrypted raw token)
-    ArduKeyUtilities::encodeArduHex((char *) &otp, result, ARDUKEY_PUBLICID_SIZE + ARDUKEY_BLOCKSIZE);
+    // Converts OTP (public id + encrypted raw token) to arduhex encoding
+    ArduKeyUtilities::encodeArduHex((char *) &otp, result, ARDUKEY_PUBLICID_SIZE + ARDUKEY_TOKEN_SIZE);
 
     // Increments session counter
     incrementSessionCounter();
@@ -179,16 +178,15 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
  */
 void setup()
 {
-    #ifdef ARDUKEY_DEBUG
+    #if ARDUKEY_DEBUG == 1
         Serial.begin(9600);
         Serial.println("Initializing ArduKey...");
     #endif
 
     initializeArduKey();
 
-    // Configures button pin as an input and enable the internal 20 KOhm pull-up resistor
+    // Configures button pin as an input and enable the internal 20 kOhm pull-up resistor
     pinMode(ARDUKEY_PIN_BUTTON, INPUT_PULLUP);
-    digitalWrite(ARDUKEY_PIN_BUTTON, HIGH);
 }
 
 int previousButtonState = HIGH;
@@ -201,7 +199,7 @@ int previousButtonState = HIGH;
  */
 void loop()
 {
-    #ifdef ARDUKEY_ENABLE_KEYBOARD
+    #if ARDUKEY_ENABLE_KEYBOARD == 1
         VUSBHIDKeyboardMouse.update();
     #endif
 
@@ -215,13 +213,13 @@ void loop()
     {
         generateOneTimePad(otp);
 
-        #ifdef ARDUKEY_DEBUG
+        #if ARDUKEY_DEBUG == 1
             Serial.println("Output OTP:");
             Serial.println(otp);
             Serial.println();
         #endif
 
-        #ifdef ARDUKEY_ENABLE_KEYBOARD
+        #if ARDUKEY_ENABLE_KEYBOARD == 1
             for (int i = 0; i < sizeof(otp); i++)
             {
                 UsbKeyboard.sendKey(otp[i]);
@@ -232,7 +230,7 @@ void loop()
     }
 
     // TODO: Needed?
-    // #ifdef ARDUKEY_ENABLE_KEYBOARD
+    // #if ARDUKEY_ENABLE_KEYBOARD == 1
     //     UsbKeyboard.update(4);
     // #endif
 

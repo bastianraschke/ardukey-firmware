@@ -1,5 +1,5 @@
 /*
- * ArduKey - A slim OTP token device based on Arduino.
+ * ArduKey - A simple OTP device based on Arduino.
  *
  * Written by Bastian Raschke <bastian.raschke@posteo.de>
  * Copyright (C) 2014 Bastian Raschke
@@ -10,58 +10,66 @@
 #ifndef __ARDUKEY_H__
 #define __ARDUKEY_H__
 
+
 // Include integer type aliases
 #include <inttypes.h>
 
-// Include default types like size_t
+// Include default types like "size_t"
 #include <stdlib.h>
 
-// For sprintf(), Serial:
+// Include Arduino basics (for sprintf(), Serial, ...)
 #include <Arduino.h>
 
 
-// ArduKey debugging
-//
+/*
+ * ArduKey debugging
+ *
+ */
 
-// Uncomment to enable debugging:
+// Set to "1" to enable serial debugging:
 #define ARDUKEY_DEBUG 1
 
-// Uncomment to enable keyboard functionality:
-// #define ARDUKEY_ENABLE_KEYBOARD 1
+// Set to "1" to enable keyboard functionality:
+#define ARDUKEY_ENABLE_KEYBOARD 0
 
-
-// ArduKey general definitions
-//
-
-#define ARDUKEY_PIN_BUTTON 6
-
-#define ARDUKEY_BLOCKSIZE 16
-
-#define ARDUKEY_PUBLICID_SIZE 6
-#define ARDUKEY_SECRETID_SIZE 6
-
-// Length: 44 chars + '\0' char
-#define ARDUKEY_OTP_SIZE ((ARDUKEY_PUBLICID_SIZE + ARDUKEY_BLOCKSIZE) * 2 + 1)
-
-
-// TimerOne library definitions
-//
-
-// Update interval of timestamp in µs
-// 8 Hz in this case (1000000 / 8)
-#define TIMERONE_TIMESTAMPUPDATE 125000
-
-
-// AES library definitions
-//
+/*
+ * AES library definitions
+ *
+ */
 
 #define AES_CIPHER_BITS 128
 #define AES_BLOCKSIZE 16
 #define AES_KEYSIZE 16
 
+/*
+ * ArduKey general definitions
+ *
+ */
 
-// ArduKey special type definitions
-//
+#define ARDUKEY_PIN_BUTTON 6
+#define ARDUKEY_PIN_LED 13
+
+#define ARDUKEY_PUBLICID_SIZE 6
+#define ARDUKEY_SECRETID_SIZE 6
+
+// Length of the raw/encrypted token
+#define ARDUKEY_TOKEN_SIZE 16
+
+// Length of "typed" OTP: 44 chars + '\0' char
+#define ARDUKEY_OTP_SIZE ((ARDUKEY_PUBLICID_SIZE + ARDUKEY_TOKEN_SIZE) * 2 + 1)
+
+/*
+ * TimerOne library definitions
+ *
+ */
+
+// Update interval of timestamp in µs; 8 Hz in this case (1000000 / 8)
+#define TIMERONE_TIMESTAMPUPDATE 125000
+
+/*
+ * ArduKey special type definitions
+ *
+ */
 
 // The raw token structure
 typedef struct
@@ -96,7 +104,7 @@ typedef struct
 }
 ardukey_token_t;
 
-// The final OTP structure
+// The OTP structure
 typedef struct
 {
     // The public id part
@@ -105,13 +113,13 @@ typedef struct
 
     // The encrypted raw token.
     // 16 Bytes
-    uint8_t encryptedRawToken[AES_BLOCKSIZE];
+    uint8_t encryptedRawToken[ARDUKEY_TOKEN_SIZE];
 
 }
 ardukey_otp_t;
 
 
-// Includes all ArduKey library files
+// Include ArduKey library files
 #include "ArduKeyEEPROM.h"
 #include "ArduKeyUtilities.h"
 

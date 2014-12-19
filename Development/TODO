@@ -1,1 +1,2 @@
-- Better setup approach (no Arduino Sketch -> better direct EEPROM via avrdude) 
+- License shit
+- New TinyUSBBoard USB library

@@ -1,5 +1,5 @@
 /*
- * ArduKey - A slim OTP token device based on Arduino.
+ * ArduKey - A simple OTP device based on Arduino.
  *
  * Written by Bastian Raschke <bastian.raschke@posteo.de>
  * Copyright (C) 2014 Bastian Raschke
@@ -11,23 +11,24 @@
 #define __ARDUKEY_EEPROM_H__
 
 
-// Limit for EEPROM (may be different on the Arduino/IC models)
-// 512 Bytes should be the lowest limit (ATmega168) of usual Arduino models.
+// Limit for EEPROM (different on the Arduino models / Atmel chips)
+// Note: 512 Bytes should be work on usual models
 #define EEPROM_MIN_ADDRESS 0
 #define EEPROM_MAX_ADDRESS 511
 
-// Data position definitions
-//
-
+// Position and length of AES key in EEPROM
 #define EEPROM_AESKEY_POS 0
 #define EEPROM_AESKEY_LEN 16
 
+// Position and length of counter in EEPROM
 #define EEPROM_COUNTER_POS (EEPROM_AESKEY_POS + EEPROM_AESKEY_LEN)
 #define EEPROM_COUNTER_LEN 2
 
+// Position and length of public id in EEPROM
 #define EEPROM_PUBLICID_POS (EEPROM_COUNTER_POS + EEPROM_COUNTER_LEN)
 #define EEPROM_PUBLICID_LEN 6
 
+// Position and length of secret id in EEPROM
 #define EEPROM_SECRETID_POS (EEPROM_PUBLICID_POS + EEPROM_PUBLICID_LEN)
 #define EEPROM_SECRETID_LEN 6
 

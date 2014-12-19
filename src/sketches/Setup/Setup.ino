@@ -1,5 +1,5 @@
 /*
- * ArduKey - A slim OTP token device based on Arduino.
+ * ArduKey - A simple OTP device based on Arduino.
  *
  * Written by Bastian Raschke <bastian.raschke@posteo.de>
  * Copyright (C) 2014 Bastian Raschke
@@ -9,33 +9,29 @@
 
 #include <ArduKey.h>
 
-
 /*
  * Contains all ArduKey setup processes.
  *
- * @return void
+ * @return bool
  *
  */
-void setupArduKey()
+bool setupArduKey()
 {
     // The used AES key used for symmetric encryption
     const uint8_t aesKey[AES_KEYSIZE] =
     {
-        // CHANGE THIS:
         0x7A, 0x18, 0x58, 0x59, 0x2F, 0xCB, 0x76, 0xBD, 0x5E, 0xB2, 0x68, 0x54, 0x21, 0xAE, 0xD4, 0x5E
     };
 
-    // The public identity (must be unique to identiy device)
+    // The public identity (must be unique to identify device)
     const uint8_t publicId[ARDUKEY_PUBLICID_SIZE] =
     {
-        // CHANGE THIS:
         0x00, 0x00, 0x00, 0x00, 0x00, 0x01
     };
 
-    // The secret identity that is only known by device and Auth server
+    // The secret identity that is only known by device and auth server
     const uint8_t secretId[ARDUKEY_SECRETID_SIZE] =
     {
-        // CHANGE THIS:
         0xB0, 0xD4, 0xA2, 0xD6, 0x9B, 0xC4
     };
 
@@ -46,47 +42,47 @@ void setupArduKey()
     // Writes the AES key to EEPROM
     if ( ArduKeyEEPROM::setAESKey(aesKey) == true )
     {
-        Serial.println("Your new AES key:");
-        ArduKeyUtilities::serialDump(aesKey, AES_KEYSIZE);
-        Serial.println();
+        Serial.println("Wrote new AES key.");
     }
     else
     {
         Serial.println("Error: The AES key could not be written!");
+        return false;
     }
 
     // Writes the public id to EEPROM
     if ( ArduKeyEEPROM::setPublicId(publicId) == true )
     {
-        Serial.println("Your new public id:");
-        ArduKeyUtilities::serialDump(publicId, ARDUKEY_PUBLICID_SIZE);
-        Serial.println();
+        Serial.println("Wrote new public id.");
     }
     else
     {
         Serial.println("Error: The public id could not be written!");
+        return false;
     }
 
     // Writes the secret id to EEPROM
     if ( ArduKeyEEPROM::setSecretId(secretId) == true )
     {
-        Serial.println("Your new secret id:");
-        ArduKeyUtilities::serialDump(secretId, ARDUKEY_SECRETID_SIZE);
-        Serial.println();
+        Serial.println("Wrote new secret id.");
     }
     else
     {
         Serial.println("Error: The secret id could not be written!");
+        return false;
     }
 
-    Serial.println("Resetting persitent counter...");
+    Serial.println("Resetting counter...");
 
     // Resets counter value
     // Important: Do not set to zero cause the auth server inits with zero!
     ArduKeyEEPROM::setCounter(0x0001);
 
     Serial.println("All done.");
+    return true;
 }
+
+int setupOperationResult = false;
 
 /*
  * The Arduino setup method.
@@ -98,13 +94,17 @@ void setup()
 {
     Serial.begin(9600);
 
-    // Wait for serial port to connect
-    while (!Serial)
-    {
-        ;
-    }
+    // Initialize LED
+    pinMode(ARDUKEY_PIN_LED, OUTPUT);
 
-    setupArduKey();
+    // Start setup of ArduKey
+    setupOperationResult = setupArduKey();
+
+    // Enable LED permanently if operation was successfull
+    if ( setupOperationResult == true )
+    {
+        digitalWrite(ARDUKEY_PIN_LED, HIGH);
+    }
 }
 
 /*
@@ -115,5 +115,12 @@ void setup()
  */
 void loop()
 {
-    // Nothing to do ;)
+    // Blink 2 times per second if operation was unsuccessfull
+    if ( setupOperationResult == false )
+    {
+        digitalWrite(ARDUKEY_PIN_LED, HIGH);
+        delay(250);
+        digitalWrite(ARDUKEY_PIN_LED, LOW);
+        delay(250);
+    }
 }

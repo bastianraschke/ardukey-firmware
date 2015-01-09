@@ -117,7 +117,7 @@ PROGMEM const char usbHidMouseReportDescriptor[] = {
     0x29, 0x03,                    //     USAGE_MAXIMUM (03)
     0x15, 0x00,                    //     LOGICAL_MINIMUM (0)
     0x25, 0x01,                    //     LOGICAL_MAXIMUM (1)   
-    0x95, 0x03,                    //     REPORT_COUNT (5)
+    0x95, 0x03,                    //     REPORT_COUNT (3)
     0x75, 0x01,                    //     REPORT_SIZE (1)    
     0x81, 0x02,                    //     INPUT (Data,Var,Abs) ; 3 button bits
     0x95, 0x01,                    //     REPORT_COUNT (1)
@@ -131,6 +131,17 @@ PROGMEM const char usbHidMouseReportDescriptor[] = {
     0x75, 0x08,                    //     REPORT_SIZE (8)
     0x95, 0x02,                    //     REPORT_COUNT (2)
     0x81, 0x06,                    //     INPUT (Data,Var,Rel) ; 2 position bytes (X & Y)
+#ifdef USB_CFG_HID_WHEELMOUSE
+    0x05, 0x01,                    //     USAGE_PAGE (Generic Desktop)
+    0x09, 0x38,                    //     USAGE (Wheel)
+    0x15, 0x81,                    //     LOGICAL_MINIMUM (-127)
+    0x25, 0x7f,                    //     LOGICAL_MAXIMUM (127)
+    0x35, 0x00,                    //     PHYSICAL_MINIMUM (0)        - reset physical
+    0x45, 0x00,                    //     PHYSICAL_MAXIMUM (0)
+    0x95, 0x01,                    //     REPORT_COUNT (1)
+    0x75, 0x08,                    //     REPORT_SIZE (8)
+    0x81, 0x06,                    //     INPUT (Data,Var,Rel)
+#endif
     0xc0,                          //   END_COLLECTION
     0xc0,                          // END_COLLECTION
 };

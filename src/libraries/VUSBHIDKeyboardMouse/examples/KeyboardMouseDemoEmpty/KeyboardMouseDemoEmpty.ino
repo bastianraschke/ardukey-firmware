@@ -1,36 +1,59 @@
 #include "VUSBHIDKeyboardMouse.h"
 
-#define LED_NUMLOCK    8
-#define LED_CAPSLLOCK  9
-#define LED_SCROLLLOCK 5
-#define LED_BLINK      3
+#define LED_NUMLOCK	8
+#define LED_CAPSLLOCK	9
+#define LED_SCROLLLOCK	5
+#define LED_BLINK	3
+
+
+/* 
+ * in order to work without timer, the following value configures timing 
+ * please calibrate it, to see the "LED_BLINK" blink 
+ * with about 8sec (4sec on and 4sec off)..
+ */
+#define TIMECTRLTUNE	400
+
+
 
 void setup() {
+  // disables Arduino's default millisecond counter (it disturbs the USB otherwise)
+#ifdef TIMSK
+  // older ATmega
+  TIMSK &= ~(_BV(TOIE0));
+#else
+  // newer ATmega
+  TIMSK0 &= ~(_BV(TOIE0));
+#endif
+
+  // remaining inits...
   pinMode(LED_NUMLOCK, OUTPUT);
   pinMode(LED_CAPSLLOCK, OUTPUT);
   pinMode(LED_SCROLLLOCK, OUTPUT);
   pinMode(LED_BLINK, OUTPUT);
-}
-
-void delayMs(unsigned int ms) {
-  for (int i = 0; i < 100*ms; i++) {
-    delayMicroseconds(10);
-    VUSBHIDKeyboardMouse.update();
-  }
-}
-
-byte counter = 0;
-
-void loop() {
-  VUSBHIDKeyboardMouse.update(1);
   
-  counter++;
-  if (counter >= 250) {
-    counter=0;
+  /* start with LED switched on */
+  digitalWrite(LED_BLINK, 1);
+}
+
+static uint16_t toSecondsCounter	= 0;
+static uint16_t timeCalibrationCounter	= 0;
+void loop() {
+  timeCalibrationCounter++;
+
+  if (timeCalibrationCounter<TIMECTRLTUNE) {
+    VUSBHIDKeyboardMouse.update(0);
+  } else {
+    /* every 4ms */
+    timeCalibrationCounter=0;
+    VUSBHIDKeyboardMouse.update(1);
+    toSecondsCounter++;
+  }
+
+  /* the calibrated frequency to measure */
+  if (toSecondsCounter >= 1000) {
+    toSecondsCounter=0;
     digitalWrite(LED_BLINK, !digitalRead(LED_BLINK));
   }
-  
-  delayMs(4);
 }
 
 

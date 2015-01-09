@@ -125,15 +125,22 @@ struct __keyboard_report_t {
 #ifndef USB_CFG_HID_NOMOUSE
 typedef struct __mouse_report_t mouse_report_t;
 
-#define mouse_report_buttonbit_left	0
-#define mouse_report_buttonbit_middle	1
-#define mouse_report_buttonbit_right	2
+#define mouse_report_buttonbit_left		0
+#define mouse_report_buttonbit_middle		1
+#define mouse_report_buttonbit_right		2
 
-#define mouse_report_displacement_X	0
-#define mouse_report_displacement_Y	1
+#define mouse_report_displacement_X		0
+#define mouse_report_displacement_Y		1
+#ifdef USB_CFG_HID_WHEELMOUSE
+#	define mouse_report_displacement_wheel	2
+#endif
 struct __mouse_report_t {
         uint8_t buttons;
+#ifdef USB_CFG_HID_WHEELMOUSE
+         int8_t displacement[3]; // [0]=X, [1]=Y, [2]=wheel
+#else
          int8_t displacement[2]; // [0]=X, [1]=Y
+#endif
 } __attribute__((packed));
 #endif
 

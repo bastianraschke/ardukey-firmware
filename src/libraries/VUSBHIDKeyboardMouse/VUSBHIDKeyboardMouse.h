@@ -189,6 +189,11 @@ class VUSBHIDKeyboardMouseDevice {
     sendKeyReport(&report);
     sendKeyRelease();
   }
+  
+  /* for more compatibility with other keyboard libs */
+  void write(byte symbol) {
+    sendKey(symbol);
+  }
 #endif
 
 
@@ -222,6 +227,14 @@ class VUSBHIDKeyboardMouseDevice {
       mouse_report_t report = getMouseReport(deltaX, deltaY, buttons);
       sendMouseReport(&report);
     } else sendMouseIdle();
+  }
+
+  /* for more compatibility with other mouse libs */
+  void move(int8_t deltaX, int8_t deltaY) {
+    sendMouseEvent(deltaX, deltaY, 0);
+  }
+  void click(uint8_t buttons) {
+    sendMouseEvent(0, 0, buttons);
   }
 #endif
 };

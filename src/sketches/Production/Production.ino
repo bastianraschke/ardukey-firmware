@@ -114,6 +114,17 @@ void initializeArduKey()
     // Initializes timer library for updating timestamp
     Timer1.initialize();
     Timer1.attachInterrupt(incrementTimestamp, TIMERONE_TIMESTAMPUPDATE);
+
+    // TODO
+    // disables Arduino's default millisecond counter (it disturbs the USB otherwise)
+    #ifdef TIMSK
+      // older ATmega
+      TIMSK &= ~(_BV(TOIE0));
+    #else
+      // newer ATmega
+      TIMSK0 &= ~(_BV(TOIE0));
+    #endif
+
 }
 
 /*
@@ -189,6 +200,9 @@ void setup()
     pinMode(ARDUKEY_PIN_BUTTON, INPUT_PULLUP);
 }
 
+
+
+static uint16_t timeCalibrationCounter  = 0;
 int previousButtonState = HIGH;
 
 /*
@@ -228,11 +242,6 @@ void loop()
             UsbKeyboard.sendKeyStroke(KEY_ENTER);
         #endif
     }
-
-    // TODO: Needed?
-    // #if ARDUKEY_ENABLE_KEYBOARD == 1
-    //     UsbKeyboard.update(4);
-    // #endif
 
     previousButtonState = buttonState;
 }

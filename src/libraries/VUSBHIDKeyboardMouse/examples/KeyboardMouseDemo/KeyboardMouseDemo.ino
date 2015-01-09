@@ -1,9 +1,19 @@
-
 #include "VUSBHIDKeyboardMouse.h"
 
-#define KLICK_LED 3
-#define BLINK_LED 5
-#define BUTTON    6
+#define LED_KLICK	3
+#define LED_BLINK	5
+#define BUTTON_PIN	6
+
+#define TYPEDELAY_4MS	20
+#define WIGGLEDELAY_4MS	10
+
+/* 
+ * in order to work without timer, the following value configures timing 
+ * please calibrate it, to see the "LED_BLINK" blink 
+ * with about 8sec (4sec on and 4sec off)..
+ */
+#define TIMECTRLTUNE	350
+
 
 prog_uchar message[] PROGMEM  = {
 "tinyUSBboard\n"
@@ -23,42 +33,74 @@ prog_uchar message[] PROGMEM  = {
 };
 
 void setup() {
+  // disables Arduino's default millisecond counter (it disturbs the USB otherwise)
+#ifdef TIMSK
+  // older ATmega
+  TIMSK &= ~(_BV(TOIE0));
+#else
+  // newer ATmega
+  TIMSK0 &= ~(_BV(TOIE0));
+#endif
+
+  // remaining inits...
   randomSeed(analogRead(0));
 
-  pinMode(KLICK_LED, OUTPUT);
-  pinMode(BLINK_LED, OUTPUT);
-  pinMode(BUTTON, INPUT_PULLUP);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  digitalWrite(BUTTON_PIN, HIGH);
+
+  pinMode(LED_KLICK, OUTPUT);
+
+  /* start with LED switched on */
+  pinMode(LED_BLINK, OUTPUT);
+  digitalWrite(LED_BLINK, 1);
 }
 
-void delayMs(unsigned int ms) {
-  for (int i = 0; i < 10*ms; i++) {
-    delayMicroseconds(100);
-    VUSBHIDKeyboardMouse.update();
-  }
-}
 
-static byte    i              = 0;
-static byte    delayCounter   = 0; /* start delay */
-static size_t  charPosition   = sizeof(message); /* message symbol */
+static byte    typeDelayCounter		= 0;
+static byte    wiggleDelayCounter	= 0;
+static size_t  charPosition   		= sizeof(message); /* message symbol */
 
+static uint16_t toSecondsCounter	= 0;
+static uint16_t timeCalibrationCounter	= 0;
 void loop() {
-  i++;
-  VUSBHIDKeyboardMouse.update(1);
-  if (i>16) {
-    uint8_t button = 0;
-    i=0;
-    if (delayCounter>=32) {
-      charPosition++;
-      if (charPosition>=sizeof(message)) charPosition=0;
-      UsbKeyboard.sendKey(pgm_read_byte_near(message + charPosition));
-    } else delayCounter++;
+  timeCalibrationCounter++;
 
-    // wiggle the mouse
-    if (!digitalRead(BUTTON)) button|=MOD_MOUSE_LEFT;
-    UsbMouse.sendMouseEvent(random(-8,8), random(-8,8), button);
-    digitalWrite(KLICK_LED, button);
+  if (timeCalibrationCounter<TIMECTRLTUNE) {
+    VUSBHIDKeyboardMouse.update(0);
+  } else {
+    /* every 4ms */
+    timeCalibrationCounter=0;
+    
+    /* keyboard */
+    typeDelayCounter++;
+    if (typeDelayCounter >= TYPEDELAY_4MS) {
+      typeDelayCounter=0;
+      if (!digitalRead(BUTTON_PIN)) {
+	digitalWrite(LED_KLICK, 1);
+	charPosition++;
 
-    digitalWrite(BLINK_LED, !digitalRead(BLINK_LED));
+	//type a key
+	if (charPosition>=sizeof(message)) charPosition=0;
+	UsbKeyboard.write(pgm_read_byte_near(message + charPosition));
+      } else digitalWrite(LED_KLICK, 0);
+    }
+
+    /* mouse */
+    wiggleDelayCounter++;
+    if (wiggleDelayCounter >= WIGGLEDELAY_4MS) {
+      // wiggle the mouse
+      wiggleDelayCounter=0;
+      UsbMouse.move(random(-8,8), random(-8,8));
+    }
+
+    VUSBHIDKeyboardMouse.update(1);
+    toSecondsCounter++;
   }
-  delayMs(4);
+
+
+  /* the calibrated frequency to measure */
+  if (toSecondsCounter >= 1000) {
+    toSecondsCounter=0;
+    digitalWrite(LED_BLINK, !digitalRead(LED_BLINK));
+  }
 }

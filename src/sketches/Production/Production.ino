@@ -115,16 +115,17 @@ void initializeArduKey()
     Timer1.initialize();
     Timer1.attachInterrupt(incrementTimestamp, TIMERONE_TIMESTAMPUPDATE);
 
-    // TODO
-    // disables Arduino's default millisecond counter (it disturbs the USB otherwise)
-    #ifdef TIMSK
-      // older ATmega
-      TIMSK &= ~(_BV(TOIE0));
-    #else
-      // newer ATmega
-      TIMSK0 &= ~(_BV(TOIE0));
+    #if ARDUKEY_ENABLE_KEYBOARD == 1
+        // Important for USB:
+        // Disables default millisecond counter of Arduino (it disturbs the USB otherwise)
+        #ifdef TIMSK
+          // Older ATmega
+          TIMSK &= ~(_BV(TOIE0));
+        #else
+          // Newer ATmega
+          TIMSK0 &= ~(_BV(TOIE0));
+        #endif
     #endif
-
 }
 
 /*
@@ -198,11 +199,11 @@ void setup()
 
     // Configures button pin as an input and enable the internal 20 kOhm pull-up resistor
     pinMode(ARDUKEY_PIN_BUTTON, INPUT_PULLUP);
+
+    // Additionally sets pin default state
+    digitalWrite(ARDUKEY_PIN_BUTTON, HIGH);
 }
 
-
-
-static uint16_t timeCalibrationCounter  = 0;
 int previousButtonState = HIGH;
 
 /*
@@ -214,7 +215,7 @@ int previousButtonState = HIGH;
 void loop()
 {
     #if ARDUKEY_ENABLE_KEYBOARD == 1
-        VUSBHIDKeyboardMouse.update();
+        UsbKeyboard.update(0);
     #endif
 
     char otp[ARDUKEY_OTP_SIZE] = "";

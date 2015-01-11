@@ -27,10 +27,10 @@
  */
 
 // Set to "1" to enable serial debugging:
-#define ARDUKEY_DEBUG 1
+#define ARDUKEY_DEBUG 0
 
 // Set to "1" to enable keyboard functionality:
-#define ARDUKEY_ENABLE_KEYBOARD 0
+#define ARDUKEY_ENABLE_KEYBOARD 1
 
 /*
  * AES library definitions

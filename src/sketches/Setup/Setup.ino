@@ -2,7 +2,7 @@
  * ArduKey - A simple OTP device based on Arduino.
  *
  * Written by Bastian Raschke <bastian.raschke@posteo.de>
- * Copyright (C) 2014 Bastian Raschke
+ * Copyright (C) 2015 Bastian Raschke
  * All rights reserved.
  *
  */

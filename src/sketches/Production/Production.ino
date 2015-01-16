@@ -2,7 +2,7 @@
  * ArduKey - A simple OTP device based on Arduino.
  *
  * Written by Bastian Raschke <bastian.raschke@posteo.de>
- * Copyright (C) 2014 Bastian Raschke
+ * Copyright (C) 2015 Bastian Raschke
  * All rights reserved.
  *
  */
@@ -137,12 +137,13 @@ void initializeArduKey()
  */
 bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 {
-    // Gets 2 bytes random entropy (range 0..66535)
+    // Gets 2 bytes pseudo random entropy (range 0..66535)
     token.random = random(0xFFFF);
 
     // Calculates CRC16 checksum of raw token
-    // (only the first 14 Bytes cause we do not want to include the checksum itself)
-    token.crc = ArduKeyUtilities::calculateCRC16((uint8_t*) &token, ARDUKEY_TOKEN_SIZE - 2);
+    // (only the first 14 Bytes to exclude the checksum itself)
+    token.crc = ArduKeyUtilities::calculateCRC16((uint8_t*) &token,
+        ARDUKEY_TOKEN_SIZE - 2);
 
     #if ARDUKEY_DEBUG == 1
         Serial.println("Raw token:");
@@ -174,7 +175,8 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     #endif
 
     // Converts OTP (public id + encrypted raw token) to arduhex encoding
-    ArduKeyUtilities::encodeArduHex((char *) &otp, result, ARDUKEY_PUBLICID_SIZE + ARDUKEY_TOKEN_SIZE);
+    ArduKeyUtilities::encodeArduHex((char *) &otp, result,
+        ARDUKEY_PUBLICID_SIZE + ARDUKEY_TOKEN_SIZE);
 
     // Increments session counter
     incrementSessionCounter();
@@ -197,7 +199,7 @@ void setup()
 
     initializeArduKey();
 
-    // Configures button pin as an input and enable the internal 20 kOhm pull-up resistor
+    // Configures button pin as an input with internal pull-up resistor
     pinMode(ARDUKEY_PIN_BUTTON, INPUT_PULLUP);
 
     // Additionally sets pin default state
@@ -223,7 +225,7 @@ void loop()
     // Gets current button state
     int buttonState = digitalRead(ARDUKEY_PIN_BUTTON);
 
-    // Checks if button state changed
+    // Checks if button state changed (polling)
     if ( buttonState != previousButtonState && buttonState == LOW )
     {
         generateOneTimePad(otp);

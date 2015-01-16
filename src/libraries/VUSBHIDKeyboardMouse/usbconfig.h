@@ -334,7 +334,7 @@ section at the end of this file).
  * you use a shared VID/PID.
  */
 #ifndef USB_CFG_SERIAL_NUMBER
-#	define USB_CFG_SERIAL_NUMBER 'v', '1', '.', '0', '-', '2', '0', '1', '5', '0', '1', '1', '1'
+#	define USB_CFG_SERIAL_NUMBER 'v', '1', '.', '0', '-', '2', '0', '1', '5', '0', '1', '1', '6'
 #endif
 #ifndef USB_CFG_SERIAL_NUMBER_LEN
 #	define USB_CFG_SERIAL_NUMBER_LEN  13

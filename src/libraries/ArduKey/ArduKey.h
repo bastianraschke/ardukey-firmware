@@ -22,7 +22,7 @@
 
 
 /*
- * ArduKey debugging
+ * ArduKey debugging settings
  *
  */
 
@@ -46,7 +46,6 @@
  *
  */
 
-#define ARDUKEY_PIN_BUTTON 6
 #define ARDUKEY_PIN_CAPACITIVE_SENSOR 12
 #define ARDUKEY_PIN_LED 13 // TODO
 

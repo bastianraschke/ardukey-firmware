@@ -14,7 +14,7 @@
 
 
 /*
- * Dumps the complete EEPROM as hex output via Serial.
+ * Dump the complete EEPROM as hex output via Serial.
  * Thanks to: http://playground.arduino.cc/Code/EepromUtil
  *
  * @return void
@@ -32,14 +32,14 @@ void ArduKeyEEPROM::dumpEEPROM()
 
     for (int n = EEPROM_MIN_ADDRESS; n <= EEPROM_MAX_ADDRESS; n++)
     {
-        // Prints the address if it is the first byte in a row
+        // Print the address if it is the first byte in a row
         if (x == 0)
         {
             sprintf(buffer, "%03X: ", n);
             Serial.print(buffer);
         }
 
-        // Reads one byte and write to buffer
+        // Read one byte and write to buffer
         currentByte = eeprom_read_byte((uint8_t *) n);
         sprintf(buffer, "%02X ", currentByte);
 
@@ -58,7 +58,7 @@ void ArduKeyEEPROM::dumpEEPROM()
 }
 
 /*
- * Checks if given address is in a valid range.
+ * Check if given address is in a valid range.
  *
  * @param address The address to check.
  * @return bool
@@ -70,7 +70,7 @@ bool ArduKeyEEPROM::isAddressOkay(int address)
 }
 
 /*
- * Reads a given count of bytes from EEPROM.
+ * Read a given count of bytes from EEPROM.
  *
  * Note: We use the passed pointer style (and not a uint8_t buffer[]) to provide 2 methods:
  * 1) Write to a passed uint8_t buffer[]
@@ -98,7 +98,7 @@ bool ArduKeyEEPROM::getBytes(int address, uint8_t* ptr, size_t length)
     for (int i = 0; i < length; i++)
     {
         // The address passed to eeprom_x_byte() is a normal integer
-        // and has to be casted to "real address type" (represented via byte pointer).
+        // and need to be casted to "real address type" (represented via byte pointer).
         *ptr++ = eeprom_read_byte((uint8_t *) (address + i));
     }
 
@@ -106,7 +106,7 @@ bool ArduKeyEEPROM::getBytes(int address, uint8_t* ptr, size_t length)
 }
 
 /*
- * Writes the given array to position (starting at given address) to EEPROM.
+ * Write the given array to position (starting at given address) to EEPROM.
  *
  * Note: We use the passed pointer style (and not a uint8_t buffer[]) to provide 2 methods:
  * 1) Read from a passed uint8_t buffer[]
@@ -133,7 +133,8 @@ bool ArduKeyEEPROM::setBytes(int address, const uint8_t* ptr, size_t length)
 
     for (int i = 0; i < length; i++)
     {
-        // The address passed to eeprom_x_byte() is a normal integer and has to be casted to "address type".
+        // The address passed to eeprom_x_byte() is a normal integer
+        // and need to be casted to "real address type" (represented via byte pointer).
         eeprom_write_byte((uint8_t *) (address + i), *ptr++);
     }
 
@@ -141,7 +142,7 @@ bool ArduKeyEEPROM::setBytes(int address, const uint8_t* ptr, size_t length)
 }
 
 /*
- * Reads the AES key from EEPROM.
+ * Read the AES key from EEPROM.
  *
  * @param buffer The buffer array we write to.
  * @return bool
@@ -153,7 +154,7 @@ bool ArduKeyEEPROM::getAESKey(uint8_t buffer[AES_KEYSIZE])
 }
 
 /*
- * Writes a new AES key to EEPROM.
+ * Write a new AES key to EEPROM.
  *
  * @param values The array of bytes we write to EEPROM.
  * @return bool
@@ -165,7 +166,7 @@ bool ArduKeyEEPROM::setAESKey(const uint8_t values[AES_KEYSIZE])
 }
 
 /*
- * Reads the public id from EEPROM.
+ * Read the public id from EEPROM.
  *
  * @param buffer The buffer array we write to.
  * @return bool
@@ -177,7 +178,7 @@ bool ArduKeyEEPROM::getPublicId(uint8_t buffer[ARDUKEY_PUBLICID_SIZE])
 }
 
 /*
- * Writes a new public id to EEPROM.
+ * Write a new public id to EEPROM.
  *
  * @param values The array of bytes we write to EEPROM.
  * @return bool
@@ -189,7 +190,7 @@ bool ArduKeyEEPROM::setPublicId(const uint8_t values[ARDUKEY_PUBLICID_SIZE])
 }
 
 /*
- * Reads the secret id from EEPROM.
+ * Read the secret id from EEPROM.
  *
  * @param buffer The buffer array we write to.
  * @return bool
@@ -201,7 +202,7 @@ bool ArduKeyEEPROM::getSecretId(uint8_t buffer[ARDUKEY_SECRETID_SIZE])
 }
 
 /*
- * Writes a new secret id to EEPROM.
+ * Write a new secret id to EEPROM.
  *
  * @param values The array of bytes we write to EEPROM.
  * @return bool
@@ -213,7 +214,7 @@ bool ArduKeyEEPROM::setSecretId(const uint8_t values[ARDUKEY_SECRETID_SIZE])
 }
 
 /*
- * Gets the current counter value from EEPROM.
+ * Get the current counter value from EEPROM.
  *
  * @return uint16_t
  *
@@ -228,7 +229,7 @@ uint16_t ArduKeyEEPROM::getCounter()
 }
 
 /*
- * Writes the new counter value to EEPROM.
+ * Write the new counter value to EEPROM.
  *
  * @param value The new counter value.
  * @return void

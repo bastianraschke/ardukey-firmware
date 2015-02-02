@@ -10,7 +10,7 @@
 #include <ArduKey.h>
 
 /*
- * Contains all ArduKey setup processes.
+ * Initialize the ArduKey setup.
  *
  * @return bool
  *
@@ -39,7 +39,7 @@ bool setupArduKey()
     Serial.println("Writing new values...");
     Serial.println();
 
-    // Writes the AES key to EEPROM
+    // Write the AES key to EEPROM
     if ( ArduKeyEEPROM::setAESKey(aesKey) == true )
     {
         Serial.println("Wrote new AES key.");
@@ -50,7 +50,7 @@ bool setupArduKey()
         return false;
     }
 
-    // Writes the public id to EEPROM
+    // Write the public id to EEPROM
     if ( ArduKeyEEPROM::setPublicId(publicId) == true )
     {
         Serial.println("Wrote new public id.");
@@ -61,7 +61,7 @@ bool setupArduKey()
         return false;
     }
 
-    // Writes the secret id to EEPROM
+    // Write the secret id to EEPROM
     if ( ArduKeyEEPROM::setSecretId(secretId) == true )
     {
         Serial.println("Wrote new secret id.");
@@ -74,7 +74,7 @@ bool setupArduKey()
 
     Serial.println("Resetting counter...");
 
-    // Resets counter value
+    // Reset counter value
     // Important: Do not set to zero cause the auth server inits with zero!
     ArduKeyEEPROM::setCounter(0x0001);
 
@@ -85,7 +85,7 @@ bool setupArduKey()
 int setupOperationResult = false;
 
 /*
- * The Arduino setup method.
+ * The Arduino setup function.
  *
  * @return void
  *
@@ -108,7 +108,7 @@ void setup()
 }
 
 /*
- * The Arduino loop method.
+ * The Arduino loop function.
  *
  * @return void
  *

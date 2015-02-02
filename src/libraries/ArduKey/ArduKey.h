@@ -47,7 +47,7 @@
  */
 
 #define ARDUKEY_PIN_CAPACITIVE_SENSOR 12
-#define ARDUKEY_PIN_LED 13 // TODO
+#define ARDUKEY_PIN_LED 13
 
 #define ARDUKEY_PUBLICID_SIZE 6
 #define ARDUKEY_SECRETID_SIZE 6
@@ -92,7 +92,7 @@ typedef struct
 
     // The current session counter value
     // 1 Byte
-    uint8_t session;
+    uint8_t sessionCounter;
 
     // Pseudo-random entropy
     // 2 Bytes

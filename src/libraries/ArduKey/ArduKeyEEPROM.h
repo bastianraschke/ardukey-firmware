@@ -16,19 +16,19 @@
 #define EEPROM_MIN_ADDRESS 0
 #define EEPROM_MAX_ADDRESS 511
 
-// Position and length of AES key in EEPROM
+// Position and length of AES key
 #define EEPROM_AESKEY_POS 0
 #define EEPROM_AESKEY_LEN 16
 
-// Position and length of counter in EEPROM
+// Position and length of counter
 #define EEPROM_COUNTER_POS (EEPROM_AESKEY_POS + EEPROM_AESKEY_LEN)
 #define EEPROM_COUNTER_LEN 2
 
-// Position and length of public id in EEPROM
+// Position and length of public id
 #define EEPROM_PUBLICID_POS (EEPROM_COUNTER_POS + EEPROM_COUNTER_LEN)
 #define EEPROM_PUBLICID_LEN 6
 
-// Position and length of secret id in EEPROM
+// Position and length of secret id
 #define EEPROM_SECRETID_POS (EEPROM_PUBLICID_POS + EEPROM_PUBLICID_LEN)
 #define EEPROM_SECRETID_LEN 6
 

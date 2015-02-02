@@ -12,7 +12,7 @@
 
 
 /*
- * Calculates the CRC16 (CRC-CCITT "0xFFFF") checksum of given data.
+ * Calculate the CRC16 (CRC-CCITT "0xFFFF") checksum of given data.
  *
  * Thanks to: "Antonio Pires" on https://stackoverflow.com/questions/10564491
  * Thanks to: "ckielstra" on http://www.ccsinfo.com/forum/viewtopic.php?t=24977
@@ -47,12 +47,12 @@ uint16_t ArduKeyUtilities::calculateCRC16(const uint8_t values[], size_t length)
 }
 
 /*
- * Converts a given array to an array that will contain the two hexadezimal representation chars per char.
- *
- * Thanks to: "K-ballo" on https://stackoverflow.com/questions/10723403
+ * Convert a given array to an array that will contain the two hexadecimal representation chars per char.
  *
  * Important:
  * The destination array must be sized N*2 + 1 in comparison to source array (N).
+ *
+ * Thanks to: "K-ballo" on https://stackoverflow.com/questions/10723403
  *
  * @args dst: The source array we read from.
  * @args src: The result array we write to.
@@ -84,7 +84,7 @@ void ArduKeyUtilities::encodeArduHex(const char src[], char dst[], size_t srcLen
     {
         char currentSrcByte = src[a++];
 
-        // Important: Do not change the brackets
+        // Important: Do not change the brackets!
         dst[b++] = table[ (currentSrcByte & 0xf0) >> 4 ];
         dst[b++] = table[ (currentSrcByte & 0x0f) >> 0 ];
     }
@@ -94,7 +94,7 @@ void ArduKeyUtilities::encodeArduHex(const char src[], char dst[], size_t srcLen
 }
 
 /*
- * Dumps an given array of data via Serial output.
+ * Dump a given array of data via serial output.
  *
  * @args values: The array to dump.
  * @args length: The length of the array.

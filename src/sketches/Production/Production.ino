@@ -21,7 +21,7 @@ ardukey_token_t token;
 ardukey_otp_t otp;
 
 /*
- * Increments the non-volatile counter value.
+ * Increment the non-volatile counter value.
  *
  * @return void
  *
@@ -33,36 +33,36 @@ void incrementCounter()
 }
 
 /*
- * Increments the volatile session counter value.
+ * Increment the session counter value.
  *
  * @return void
  *
  */
 void incrementSessionCounter()
 {
-    // Checks if the session counter reached the maximum possible value (255)
-    if ( token.session == 0xFF )
+    // Check if the session counter reached the maximum possible value (255)
+    if ( token.sessionCounter == 0xFF )
     {
-        token.session = 0x00;
+        token.sessionCounter = 0x00;
 
-        // Increments the non-volatile counter instead to indicate change
+        // Increment the non-volatile counter instead to indicate change
         incrementCounter();
     }
     else
     {
-        token.session += 1;
+        token.sessionCounter += 1;
     }
 }
 
 /*
- * Increments the timestamp value.
+ * Increment the timestamp value.
  *
  * @return void
  *
  */
 void incrementTimestamp()
 {
-    // Combines high (0xHH) and low part (0xLLLL) to 24 Byte integer (0xHHLLLL)
+    // Combine high (0xHH) and low part (0xLLLL) to 24 Byte integer (0xHHLLLL)
     uint32_t timestamp = (token.timestamp_h << 16) | token.timestamp_l;
     timestamp += 1;
 
@@ -71,7 +71,7 @@ void incrementTimestamp()
 }
 
 /*
- * Contains all ArduKey initalizing processes.
+ * Initialize the ArduKey.
  *
  * @return void
  *
@@ -82,42 +82,42 @@ void initializeArduKey()
     uint8_t publicId[ARDUKEY_PUBLICID_SIZE] = {0};
     uint8_t secretId[ARDUKEY_SECRETID_SIZE] = {0};
 
-    // Reads the AES key from EEPROM and sets AES library preferences
+    // Read the AES key from EEPROM and set AES library preferences
     ArduKeyEEPROM::getAESKey(aesKey);
     aes.set_key(aesKey, AES_CIPHER_BITS);
 
-    // Reads the public id from EEPROM and sets to OTP struct
+    // Read the public id from EEPROM and set to OTP struct
     ArduKeyEEPROM::getPublicId(publicId);
     memcpy(otp.publicId, publicId, sizeof(publicId));
 
-    // Reads the secret id from EEPROM and sets to token struct
+    // Read the secret id from EEPROM and set to token struct
     ArduKeyEEPROM::getSecretId(secretId);
     memcpy(token.secretId, secretId, sizeof(secretId));
 
-    // Gets current counter value
+    // Get current counter value
     token.counter = ArduKeyEEPROM::getCounter();
 
-    // Initializes timestamp
+    // Initialize session counter
+    token.sessionCounter = 0x00;
+
+    // Initialize timestamp
     token.timestamp_h = 0x00;
     token.timestamp_l = 0x0000;
 
-    // Initializes session counter
-    token.session = 0x00;
-
-    // Initializes pseudo random number generator with "random" analog pin noise
+    // Initialize pseudo random number generator with "random" analog pin noise
     uint16_t randomSeedValue = analogRead(0);
     randomSeed(randomSeedValue);
 
-    // Increments counter on startup
+    // Increment counter on startup
     incrementCounter();
 
-    // Initializes timer library for updating timestamp
+    // Initialize timer library for updating timestamp
     Timer1.initialize();
     Timer1.attachInterrupt(incrementTimestamp, TIMERONE_TIMESTAMPUPDATE);
 
     #if ARDUKEY_ENABLE_KEYBOARD == 1
         // Important for USB:
-        // Disables default millisecond counter of Arduino (it disturbs the USB otherwise)
+        // Disable default millisecond counter of Arduino (it disturbs the USB otherwise)
         #ifdef TIMSK
           // Older ATmega
           TIMSK &= ~(_BV(TOIE0));
@@ -129,7 +129,7 @@ void initializeArduKey()
 }
 
 /*
- * Generates a new ready-to-output OTP.
+ * Generate a new ready-to-output OTP.
  *
  * @args result The OTP.
  * @return bool
@@ -137,13 +137,12 @@ void initializeArduKey()
  */
 bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 {
-    // Gets 2 bytes pseudo random entropy (range 0..66535)
+    // Get 2 bytes pseudo random entropy (range 0..66535)
     token.random = random(0xFFFF);
 
-    // Calculates CRC16 checksum of raw token
+    // Calculate CRC16 checksum of raw token
     // (only the first 14 Bytes to exclude the checksum itself)
-    token.crc = ArduKeyUtilities::calculateCRC16((uint8_t*) &token,
-        ARDUKEY_TOKEN_SIZE - 2);
+    token.crc = ArduKeyUtilities::calculateCRC16((uint8_t*) &token, ARDUKEY_TOKEN_SIZE - 2);
 
     #if ARDUKEY_DEBUG == 1
         Serial.println("Raw token:");
@@ -152,7 +151,7 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
         char buffer[128];
         sprintf(buffer,
             "(counter = 0x%04X; timestamp_h = 0x%02X; timestamp_l = 0x%04X; session = 0x%02X; random = 0x%04X; crc = 0x%04X)",
-            token.counter, token.timestamp_h, token.timestamp_l, token.session, token.random, token.crc
+            token.counter, token.timestamp_h, token.timestamp_l, token.sessionCounter, token.random, token.crc
         );
         Serial.println(buffer);
     #endif
@@ -160,7 +159,7 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     // The buffer for encrypted raw token
     uint8_t cipher[AES_BLOCKSIZE] = {0};
 
-    // Encrypts the raw token
+    // Encrypt the raw token
     if ( aes.encrypt((uint8_t*) &token, cipher) != 0 )
     {
         return false;
@@ -174,11 +173,11 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
         ArduKeyUtilities::serialDump((uint8_t*) &otp, sizeof(otp));
     #endif
 
-    // Converts OTP (public id + encrypted raw token) to arduhex encoding
+    // Convert OTP (public id + encrypted raw token) to arduhex encoding
     ArduKeyUtilities::encodeArduHex((char *) &otp, result,
         ARDUKEY_PUBLICID_SIZE + ARDUKEY_TOKEN_SIZE);
 
-    // Increments session counter
+    // Increment session counter
     incrementSessionCounter();
 
     return true;
@@ -186,7 +185,7 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 
 uint8_t readCapacitivePin(int pinToMeasure)
 {
-    // Variables used to translate from Arduino to AVR pin naming
+    // Variable used to translate from Arduino to AVR pin naming
     volatile uint8_t* port;
     volatile uint8_t* ddr;
     volatile uint8_t* pin;
@@ -254,7 +253,7 @@ uint8_t readCapacitivePin(int pinToMeasure)
 }
 
 /*
- * The Arduino setup method.
+ * The Arduino setup function.
  *
  * @return void
  *
@@ -272,7 +271,7 @@ void setup()
 int previousCapacitiveState = HIGH;
 
 /*
- * The Arduino loop method.
+ * The Arduino loop function.
  *
  * @return void
  *
@@ -285,10 +284,10 @@ void loop()
 
     char otp[ARDUKEY_OTP_SIZE] = "";
 
-    // Gets current button state
+    // Get current capacitive state
     int capacitiveState = readCapacitivePin(ARDUKEY_PIN_CAPACITIVE_SENSOR);
 
-    // Checks if capacitive state changed (polling)
+    // Check if capacitive state changed (polling)
     if ( capacitiveState > 1 && previousCapacitiveState == 1 )
     {
         generateOneTimePad(otp);

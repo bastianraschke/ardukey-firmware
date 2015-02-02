@@ -62,12 +62,12 @@ void incrementSessionCounter()
  */
 void incrementTimestamp()
 {
-    // Combines high and low part to 24 Byte integer
-    uint32_t timestamp = (token.timestamp_h << 8) | (token.timestamp_l << 0);
+    // Combines high (0xHH) and low part (0xLLLL) to 24 Byte integer (0xHHLLLL)
+    uint32_t timestamp = (token.timestamp_h << 16) | token.timestamp_l;
     timestamp += 1;
 
-    token.timestamp_h = timestamp >> 8; // High (left) part
-    token.timestamp_l = timestamp >> 0; // Low (right) part
+    token.timestamp_h = timestamp >> 16; // High (left) part
+    token.timestamp_l = timestamp & 0x00FFFF; // Low (right) part
 }
 
 /*
@@ -97,12 +97,12 @@ void initializeArduKey()
     // Gets current counter value
     token.counter = ArduKeyEEPROM::getCounter();
 
+    // Initializes timestamp
+    token.timestamp_h = 0x00;
+    token.timestamp_l = 0x0000;
+
     // Initializes session counter
     token.session = 0x00;
-
-    // Initializes timestamp
-    token.timestamp_h = 0x0000;
-    token.timestamp_l = 0x00;
 
     // Initializes pseudo random number generator with "random" analog pin noise
     uint16_t randomSeedValue = analogRead(0);
@@ -151,8 +151,8 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
 
         char buffer[128];
         sprintf(buffer,
-            "(counter = 0x%04X; session = 0x%02X; timestamp = 0x%04X%02X; random = 0x%04X; crc = 0x%04X)",
-            token.counter, token.session, token.timestamp_h, token.timestamp_l, token.random, token.crc
+            "(counter = 0x%04X; timestamp_h = 0x%02X; timestamp_l = 0x%04X; session = 0x%02X; random = 0x%04X; crc = 0x%04X)",
+            token.counter, token.timestamp_h, token.timestamp_l, token.session, token.random, token.crc
         );
         Serial.println(buffer);
     #endif
@@ -243,11 +243,10 @@ uint8_t readCapacitivePin(int pinToMeasure)
     SREG = SREG_old;
 
     // Discharge the pin again by setting it low and output
-    //  It's important to leave the pins low if you want to
-    //  be able to touch more than 1 sensor at a time - if
-    //  the sensor is left pulled high, when you touch
-    //  two sensors, your body will transfer the charge between
-    //  sensors.
+
+    // Note: It's important to leave the pins low if you want to be able to
+    // touch more than 1 sensor at a time - if the sensor is left pulled high,
+    // when you touch two sensors, your body will transfer the charge between sensors.
     *port &= ~(bitmask);
     *ddr  |= bitmask;
 

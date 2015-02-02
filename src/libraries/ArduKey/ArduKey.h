@@ -27,10 +27,10 @@
  */
 
 // Set to "1" to enable serial debugging:
-#define ARDUKEY_DEBUG 0
+#define ARDUKEY_DEBUG 1
 
 // Set to "1" to enable keyboard functionality:
-#define ARDUKEY_ENABLE_KEYBOARD 1
+#define ARDUKEY_ENABLE_KEYBOARD 0
 
 /*
  * AES library definitions
@@ -82,17 +82,17 @@ typedef struct
     // 2 Bytes
     uint16_t counter;
 
+    // The non-volatile timestamp (low part)
+    // 2 Bytes
+    uint16_t timestamp_l;
+
+    // The non-volatile timestamp (high part)
+    // 1 Byte
+    uint8_t timestamp_h;
+
     // The current session counter value
     // 1 Byte
     uint8_t session;
-
-    // The non-volatile timestamp (high part)
-    // 2 Bytes
-    uint16_t timestamp_h;
-
-    // The non-volatile timestamp (low part)
-    // 1 Byte
-    uint8_t timestamp_l;
 
     // Pseudo-random entropy
     // 2 Bytes

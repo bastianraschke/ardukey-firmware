@@ -1,0 +1,33 @@
+~$ svn checkout http://yubico-c.googlecode.com/svn/trunk/ yubico-c
+~$ cd yubico-c
+
+~$ autoreconf --install
+~$ ./configure
+~$ make
+
+## Parse OTP:
+## Important: The AES must be passed by lower case!
+~$ ./ykparse 7a1858592fcb76bd5eb2685421aed45e hlvkhufutvhifnjbgenntjduurbhfuer
+Input:
+  token: hlvkhufutvhifnjbgenntjduurbhfuer
+          6a f9 6e 4e df 67 4b 81 53 bb d8 2e ec 16 4e 3c
+  aeskey: 7a1858592fcb76bd5eb2685421aed45e
+          7a 18 58 59 2f cb 76 bd 5e b2 68 54 21 ae d4 5e
+Output:
+          b0 d4 a2 d6 9b c4 40 00 6a 14 00 04 14 0a cd f5
+
+Struct:
+  uid: b0 d4 a2 d6 9b c4
+  counter: 64 (0x0040)
+  timestamp (low): 5226 (0x146a)
+  timestamp (high): 0 (0x00)
+  session use: 4 (0x04)
+  random: 2580 (0xa14)
+  crc: 62925 (0xf5cd)
+
+Derived:
+  cleaned counter: 64 (0x0040)
+  modhex uid: nctfldthknrf
+  triggered by caps lock: no
+  crc: F0B8
+  crc check: ok

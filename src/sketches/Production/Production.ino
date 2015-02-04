@@ -140,9 +140,9 @@ bool generateOneTimePad(char result[ARDUKEY_OTP_SIZE])
     // Get 2 bytes pseudo random entropy (range 0..66535)
     token.random = random(0xFFFF);
 
-    // Calculate CRC16 checksum of raw token
-    // (only the first 14 Bytes to exclude the checksum itself)
-    token.crc = ArduKeyUtilities::calculateCRC16((uint8_t*) &token, ARDUKEY_TOKEN_SIZE - 2);
+    // Calculate CRC16 checksum of raw token (just first 14 bytes to exclude checksum itself):
+    // Note: The CRC16 checksum must be flipped: see http://forum.yubico.com/viewtopic.php?f=2&t=69
+    token.crc = ~ArduKeyUtilities::calculateCRC16((uint8_t*) &token, ARDUKEY_TOKEN_SIZE - 2);
 
     #if ARDUKEY_DEBUG == 1
         Serial.println("Raw token:");

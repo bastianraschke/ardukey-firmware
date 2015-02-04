@@ -12,10 +12,7 @@
 
 
 /*
- * Calculate the CRC16 (CRC-CCITT "0xFFFF") checksum of given data.
- *
- * Thanks to: "Antonio Pires" on https://stackoverflow.com/questions/10564491
- * Thanks to: "ckielstra" on http://www.ccsinfo.com/forum/viewtopic.php?t=24977
+ * Calculate the CRC16 checksum of given data.
  *
  * @args values: The array to calculate checksum of.
  * @args length: The length of processed data.
@@ -32,15 +29,22 @@ uint16_t ArduKeyUtilities::calculateCRC16(const uint8_t values[], size_t length)
         return crc;
     }
 
-    uint8_t x;
+    uint16_t x;
 
     for (int i = 0; i < length; i++)
     {
-        x = (crc >> 8) ^ values[i];
-        x = x ^ (x >> 4);
+        crc ^= values[i] & 0xFF;
 
-        crc = (crc << 8) ^ (x << 12) ^ (x << 5) ^ x;
-        crc = crc & 0xFFFF;
+        for (int j = 0; j < 8; j++)
+        {
+            x = crc & 1;
+            crc >>= 1;
+
+            if (x)
+            {
+                crc ^= 0x8408;
+            }
+        }
     }
 
     return crc;

@@ -12,7 +12,7 @@
 
 
 /*
- * Calculate the CRC16 checksum of given data.
+ * Calculate the CRC16 (ISO13239) checksum of given data.
  *
  * @args values: The array to calculate checksum of.
  * @args length: The length of processed data.

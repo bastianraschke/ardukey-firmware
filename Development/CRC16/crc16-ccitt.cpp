@@ -9,7 +9,7 @@
  * @return uint16_t
  *
  */
-uint16_t ArduKeyUtilities::calculateCRC16(const uint8_t values[], size_t length)
+uint16_t calculateCRC16(const uint8_t values[], size_t length)
 {
     uint16_t crc = 0xFFFF;
 

@@ -43,13 +43,14 @@ int main(int argc, char** argv)
     // CRC16 calculation problems:
     // see: http://forum.yubico.com/viewtopic.php?f=2&t=69
 
-    uint8_t values[6] = { 0x55, 0xaa, 0x00, 0xff, 0x4a, 0x34};
+    uint8_t values[6] = {0x55, 0xaa, 0x00, 0xff, 0x4a, 0x34};
 
     // Calculate checksum:
-    uint16_t crc = ~calculateCRC16(values, 4); // 0x344A = OK
+    uint16_t c_crc = ~calculateCRC16(values, sizeof(values) - 2);
 
     // Verify checksum:
-    // uint16_t crc = calculateCRC16(values, 6); // 0xF0B8 = OK
+    uint16_t v_crc = calculateCRC16(values, sizeof(values));
 
-    printf("0x%04X\n", crc);
+    printf("0x%04X\n", c_crc); // 0x344A = OK
+    printf("0x%04X\n", v_crc); // 0xF0B8 = OK
 }

@@ -33,7 +33,7 @@
 #define ARDUKEY_ENABLE_KEYBOARD 1
 
 // Set to "1" to enable keyboard functionality of Arduino Leonardo:
-// IMPORTANT: If enabled ARDUKEY_ENABLE_KEYBOARD must set to "0"!
+// IMPORTANT: If enabled "ARDUKEY_ENABLE_KEYBOARD" must be set to "0"!
 #define ARDUKEY_ENABLE_ARDUINO_KEYBOARD 0
 
 /*

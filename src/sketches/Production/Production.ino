@@ -125,6 +125,10 @@ void initializeArduKey()
           // Newer ATmega
           TIMSK0 &= ~(_BV(TOIE0));
         #endif
+
+    #elif ARDUKEY_ENABLE_ARDUINO_KEYBOARD == 1
+        // Initializes Arduino keyboard library
+        Keyboard.begin();
     #endif
 }
 
@@ -242,6 +246,10 @@ void loop()
             }
 
             UsbKeyboard.sendKeyStroke(KEY_ENTER);
+
+        #elif ARDUKEY_ENABLE_ARDUINO_KEYBOARD == 1
+            Keyboard.print(otp);
+            Keyboard.write(KEY_RETURN);
         #endif
     }
 

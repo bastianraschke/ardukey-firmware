@@ -309,10 +309,10 @@ section at the end of this file).
 /* Version number of the device: Minor number first, then major number.
  */
 #ifndef USB_CFG_VENDOR_NAME
-#	define USB_CFG_VENDOR_NAME     'h', 't', 't', 'p', ':', '/', '/', 's', 'i', 'c', 'h', 'e', 'r', 'h', 'e', 'i', 't', 's', 'k','r','i', 't', 'i', 's','c','h', '.', 'd', 'e'
+#	define USB_CFG_VENDOR_NAME     'h', 't', 't', 'p', 's', ':', '/', '/', 's', 'i', 'c', 'h', 'e', 'r', 'h', 'e', 'i', 't', 's', 'k','r','i', 't', 'i', 's','c','h', '.', 'd', 'e'
 #endif
 #ifndef USB_CFG_VENDOR_NAME_LEN
-#	define USB_CFG_VENDOR_NAME_LEN 29
+#	define USB_CFG_VENDOR_NAME_LEN 30
 #endif
 /* These two values define the vendor name returned by the USB device. The name
  * must be given as a list of characters under single quotes. The characters
@@ -334,7 +334,7 @@ section at the end of this file).
  * you use a shared VID/PID.
  */
 #ifndef USB_CFG_SERIAL_NUMBER
-#	define USB_CFG_SERIAL_NUMBER 'v', '1', '.', '1', '-', '2', '0', '1', '5', '0', '2', '0', '4'
+#	define USB_CFG_SERIAL_NUMBER 'v', '1', '.', '2', '-', '2', '0', '1', '5', '0', '6', '2', '3'
 #endif
 #ifndef USB_CFG_SERIAL_NUMBER_LEN
 #	define USB_CFG_SERIAL_NUMBER_LEN  13

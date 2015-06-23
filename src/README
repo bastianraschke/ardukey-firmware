@@ -5,3 +5,25 @@
 
 ## Installation on Arduino Leonardo
 ##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Further information
+##
+
+Additionally you can check out the following howto, which explains the complete
+ArduKey infrastructure in detail (the howto is in german):
+
+https://sicherheitskritisch.de/2015/06/ardukey-ein-hardware-security-token-fuer-one-time-passwords-otp/

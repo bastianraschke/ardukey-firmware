@@ -11,7 +11,7 @@
 #include <ArduKey.h>
 #include <TimerOne.h>
 
-#if ARDUKEY_ENABLE_KEYBOARD == 1
+#if ARDUKEY_ENABLE_DEFAULT_KEYBOARD_LIBRARY == 1
     #include <VUSBHIDKeyboardMouse.h>
 #endif
 
@@ -115,7 +115,7 @@ void initializeArduKey()
     Timer1.initialize();
     Timer1.attachInterrupt(incrementTimestamp, TIMERONE_TIMESTAMPUPDATE);
 
-    #if ARDUKEY_ENABLE_KEYBOARD == 1
+    #if ARDUKEY_ENABLE_DEFAULT_KEYBOARD_LIBRARY == 1
         // Important for USB:
         // Disable default millisecond counter of Arduino (it disturbs the USB otherwise)
         #ifdef TIMSK
@@ -126,7 +126,7 @@ void initializeArduKey()
           TIMSK0 &= ~(_BV(TOIE0));
         #endif
 
-    #elif ARDUKEY_ENABLE_ARDUINO_KEYBOARD == 1
+    #elif ARDUKEY_ENABLE_ARDUINO_KEYBOARD_LIBRARY == 1
         // Initializes Arduino keyboard library
         Keyboard.begin();
     #endif
@@ -219,7 +219,7 @@ int previousButtonState = HIGH;
  */
 void loop()
 {
-    #if ARDUKEY_ENABLE_KEYBOARD == 1
+    #if ARDUKEY_ENABLE_DEFAULT_KEYBOARD_LIBRARY == 1
         UsbKeyboard.update(0);
     #endif
 
@@ -239,7 +239,7 @@ void loop()
             Serial.println();
         #endif
 
-        #if ARDUKEY_ENABLE_KEYBOARD == 1
+        #if ARDUKEY_ENABLE_DEFAULT_KEYBOARD_LIBRARY == 1
             for (int i = 0; i < sizeof(otp); i++)
             {
                 UsbKeyboard.sendKey(otp[i]);
@@ -247,7 +247,7 @@ void loop()
 
             UsbKeyboard.sendKeyStroke(KEY_ENTER);
 
-        #elif ARDUKEY_ENABLE_ARDUINO_KEYBOARD == 1
+        #elif ARDUKEY_ENABLE_ARDUINO_KEYBOARD_LIBRARY == 1
             Keyboard.print(otp);
             Keyboard.write(KEY_RETURN);
         #endif

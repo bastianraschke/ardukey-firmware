@@ -29,12 +29,12 @@
 // Set to "1" to enable serial debugging:
 #define ARDUKEY_DEBUG 0
 
-// Set to "1" to enable keyboard functionality:
-#define ARDUKEY_ENABLE_KEYBOARD 1
+// Set to "1" to enable keyboard functionality (default V-USB library):
+#define ARDUKEY_ENABLE_DEFAULT_KEYBOARD_LIBRARY 1
 
-// Set to "1" to enable keyboard functionality of Arduino Leonardo:
-// IMPORTANT: If enabled "ARDUKEY_ENABLE_KEYBOARD" must be set to "0"!
-#define ARDUKEY_ENABLE_ARDUINO_KEYBOARD 0
+// Set to "1" to enable keyboard functionality (Arduino USB library):
+// IMPORTANT: If enabled, "ARDUKEY_ENABLE_DEFAULT_KEYBOARD_LIBRARY" must be set to "0"!
+#define ARDUKEY_ENABLE_ARDUINO_KEYBOARD_LIBRARY 0
 
 /*
  * AES library definitions
